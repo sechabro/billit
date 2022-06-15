@@ -1,7 +1,7 @@
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy import ForeignKey, create_engine, Column, Integer, String, Boolean
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, date
 import time
 
 db = SQLAlchemy()
@@ -19,8 +19,8 @@ class InvoiceModel(db.Model):
     __tablename__ = 'invoices'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     client = db.Column(db.Integer, ForeignKey('clients.id'), nullable=False)
-    date_created = db.Column(db.DateTime, nullable=False)
-    date_sent = db.Column(db.DateTime, nullable=False)
+    date_created = db.Column(db.Date, nullable=False)
+    date_sent = db.Column(db.Date, nullable=False)
     amount = db.Column(db.Float, nullable=False)
     paid = db.Column(db.Boolean, nullable=False)
 

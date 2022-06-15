@@ -6,6 +6,7 @@ from datetime import datetime
 from sqlalchemy import create_engine, insert
 from sqlalchemy.orm import sessionmaker, declarative_base
 from app.api.clients import ClientModel
+from app.api.invoices import InvoiceModel
 
 fake = Faker()
 
@@ -14,9 +15,9 @@ Session = sessionmaker(bind=engine)
 Base = declarative_base()
 
 
-invoices = 400
 
-'''companies = 100
+
+companies = 100
 for i in range(companies):
     company_name = fake.company()
     contact_name = fake.name()
@@ -30,4 +31,15 @@ for i in range(companies):
     zipcodes = fake.postcode()
     stmt = insert(ClientModel).values(company=company_name, contact=contact_name, address=addresses, city=cities, state=states, zipcode=zipcodes)
     with engine.connect() as conn:
-        conn.execute(stmt)'''
+        conn.execute(stmt)
+
+invoices = 250
+for i in range(invoices):
+    clients = fake.random_int(min=1, max=100)
+    dates_created = fake.date_between(start_date='-45d', end_date='-30d')
+    dates_sent = fake.date_between(start_date='-29d', end_date='-1d')
+    amounts = fake.pydecimal(left_digits=4, right_digits=2, positive=True, min_value=100.00)
+    paid_bills = fake.boolean(chance_of_getting_true=65)
+    stmt = insert(InvoiceModel).values(client=clients, date_created=dates_created, date_sent=dates_sent, amount=amounts, paid=paid_bills)
+    with engine.connect() as conn:
+        conn.execute(stmt)
