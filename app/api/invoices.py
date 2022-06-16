@@ -1,9 +1,11 @@
 from flask import Blueprint, jsonify, abort, request
 import requests as req
+import sqlalchemy
 from ..models import InvoiceModel, db
-from sqlalchemy import create_engine, insert
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy import create_engine, insert, select, func, distinct
+from sqlalchemy.orm import sessionmaker, declarative_base, session
 from datetime import datetime, date
+import psycopg2
 import pytz
 
 bp = Blueprint('invoices', __name__, url_prefix='/invoices')
@@ -20,3 +22,6 @@ def client_index():
     for i in invoices:
         result.append(i.serialize()) # appending results to result list
     return jsonify(result) # return JSON response
+
+
+
