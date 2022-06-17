@@ -12,8 +12,5 @@ Session = sessionmaker(bind=engine)
 
 @app.route('/')
 def index_home():
-    session = Session()
-    paid_inv = session.query(InvoiceModel).filter(InvoiceModel.paid == True).count()
-    unpaid_inv = session.query(InvoiceModel).filter(InvoiceModel.paid == False).count()
-    total_clients = session.query(ClientModel).count()
-    return render_template('public/index.html', paid_inv = paid_inv, unpaid_inv = unpaid_inv, total_clients = total_clients)
+
+    return render_template('public/index.html')
