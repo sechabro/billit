@@ -56,19 +56,4 @@ def build_plot():
     plt.savefig(img, format='png')
     img.seek(0)
     plot_url = base64.b64encode(img.getvalue()).decode()
-    return '<img src="data:image/png;base64,{}">'.format(plot_url)
-
-@app.route('/pie_graph.png')
-def invoice_pie():
-
-
-def create_figure():
-    sections = [paid_inv, unpaid_inv]
-    labels = ['Paid Invoices', 'Unpaid Invoices']
-    colors = ['green', 'red']
-    fig1, ax1 = plt.subplots()
-    ax1.title('Paid vs. Unpaid')
-    ax1.pie(sections, labels=labels, wedgeprops={'edgecolor': 'black'}, colors=colors)
-    ax1.axis('equal')
-    plt.savefig('/static/images/invoice_payment_data.png')
-    return send_from_directory(pie)'''
+    return '<img src="data:image/png;base64,{}">'.format(plot_url)'''

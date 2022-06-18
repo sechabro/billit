@@ -23,13 +23,13 @@ unpaid_inv = session.query(InvoiceModel).filter(InvoiceModel.paid == False).coun
 
 # %%
 #Pie graphing total_inv
-fig = Figure()
 sections = [paid_inv, unpaid_inv]
 labels = ['Paid Invoices', 'Unpaid Invoices']
 colors = ['green', 'red']
 plt.title('Paid vs. Unpaid')
 plt.pie(sections, labels=labels, wedgeprops={'edgecolor': 'black'}, colors=colors)
-
+plt.axis('equal')
+#plt.savefig('app/static/images/invoice_payment_data.png')
 plt.show()
 
 
