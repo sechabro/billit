@@ -9,8 +9,7 @@ from matplotlib.pyplot import savefig
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import io
-import base64
-import random
+
 #Connect
 engine = create_engine('postgresql://postgres@localhost:5432/billit')
 Session = sessionmaker(bind=engine)
@@ -22,13 +21,10 @@ unpaid_inv = session.query(InvoiceModel).filter(InvoiceModel.paid == False).coun
 total_clients = session.query(ClientModel).count()
 total_inv = session.query(InvoiceModel).count()
 
-
-
 @app.route('/dashboard')
 def dashboard_index():
 
     return render_template('admin/dashboard.html', paid_inv = paid_inv, unpaid_inv = unpaid_inv, total_inv=total_inv, total_clients = total_clients)
-
 
 @app.route('/plot.png')
 def plot_png():
@@ -45,15 +41,3 @@ def create_figure():
     axis.hist(xs, ys1)
     return fig
     
-'''@app.route('/plot')
-def build_plot():
-    img = io.BytesIO()
-    sections = [paid_inv, unpaid_inv]
-    labels = ['Paid Invoices', 'Unpaid Invoices']
-    colors = ['green', 'red']
-    plt.title('Paid vs. Unpaid')
-    plt.pie(sections, labels=labels, wedgeprops={'edgecolor': 'black'}, colors=colors)
-    plt.savefig(img, format='png')
-    img.seek(0)
-    plot_url = base64.b64encode(img.getvalue()).decode()
-    return '<img src="data:image/png;base64,{}">'.format(plot_url)'''
