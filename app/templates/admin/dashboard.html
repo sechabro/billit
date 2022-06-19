@@ -4,56 +4,60 @@
 
 {% block b001 %}
 <div class="container">
-    <div class="row">
-        <div class="col-sm-8">
-            <form>
-                <div class="form-group">
-                  <label for="select_client">Client</label> 
-                  <div>
-                    <select id="select_client" name="select_client" aria-describedby="select_clientHelpBlock" required="required" class="custom-select">
-                      <option value="client_a">Client A</option>
-                      <option value="client_b">Client B</option>
-                      <option value="client_add">Add new client</option>
-                    </select> 
-                    <span id="select_clientHelpBlock" class="form-text text-muted">Choose client</span>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="invoice_amount">Amount</label> 
-                  <input id="invoice_amount" name="invoice_amount" placeholder="Enter invoice amount" type="text" required="required" class="form-control">
-                </div>
-                <div class="form-group">
-                  <label for="textarea">Services</label> 
-                  <textarea id="textarea" name="textarea" cols="40" rows="4" class="form-control" aria-describedby="textareaHelpBlock"></textarea> 
-                  <span id="textareaHelpBlock" class="form-text text-muted">Enter order charges</span>
-                </div>
-                <div class="form-group">
-                  <label>Paid</label> 
-                  <div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                      <input name="paid_boolean" id="paid_boolean_0" type="radio" class="custom-control-input" value="true" aria-describedby="paid_booleanHelpBlock"> 
-                      <label for="paid_boolean_0" class="custom-control-label">Yes</label>
+    <div class="row row-content">
+        <div class="col-sm-8 mx-auto">
+          <div class="card shadow-lg" style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
+              <form class="px-4 py-4">
+                  <div class="form-group">
+                    <label for="select_client">Client</label> 
+                    <div>
+                      <select id="select_client" name="select_client" aria-describedby="select_clientHelpBlock" required="required" class="custom-select">
+                        <option value="client_a">Client A</option>
+                        <option value="client_b">Client B</option>
+                        <option value="client_add">Add new client</option>
+                      </select> 
+                      <span id="select_clientHelpBlock" class="form-text text-muted">Choose client</span>
                     </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                      <input name="paid_boolean" id="paid_boolean_1" type="radio" class="custom-control-input" value="false" aria-describedby="paid_booleanHelpBlock"> 
-                      <label for="paid_boolean_1" class="custom-control-label">No</label>
-                    </div> 
-                    <span id="paid_booleanHelpBlock" class="form-text text-muted">Has the invoice been paid?</span>
                   </div>
-                </div> 
-                <div class="form-group">
-                  <button name="submit" type="submit" class="btn btn-primary">Create Invoice</button>
-                </div>
-            </form>
+                  <div class="form-group">
+                    <label for="invoice_amount">Amount</label> 
+                    <input id="invoice_amount" name="invoice_amount" placeholder="Enter invoice amount" type="text" required="required" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="textarea">Services</label> 
+                    <textarea id="textarea" name="textarea" cols="40" rows="4" class="form-control" aria-describedby="textareaHelpBlock"></textarea> 
+                    <span id="textareaHelpBlock" class="form-text text-muted">Enter order charges</span>
+                  </div>
+                  <div class="form-group">
+                    <label>Paid</label> 
+                    <div>
+                      <div class="custom-control custom-radio custom-control-inline">
+                        <input name="paid_boolean" id="paid_boolean_0" type="radio" class="custom-control-input" value="true" aria-describedby="paid_booleanHelpBlock"> 
+                        <label for="paid_boolean_0" class="custom-control-label">Yes</label>
+                      </div>
+                      <div class="custom-control custom-radio custom-control-inline">
+                        <input name="paid_boolean" id="paid_boolean_1" type="radio" class="custom-control-input" value="false" aria-describedby="paid_booleanHelpBlock"> 
+                        <label for="paid_boolean_1" class="custom-control-label">No</label>
+                      </div> 
+                      <span id="paid_booleanHelpBlock" class="form-text text-muted">Has the invoice been paid?</span>
+                    </div>
+                  </div> 
+                  <div class="form-group">
+                    <button name="submit" type="submit" class="btn btn-primary">Create Invoice</button>
+                  </div>
+              </form>
+          </div>
+        </div>
+        <div class="col-sm-4 mx-auto">
+          <div class="card shadow-lg px-4 py-4" style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
+            {% block b002%}
+            <p>{{ paid_inv }} paid invoices, {{ unpaid_inv }} unpaid invoices, {{ total_inv }} total invoices, and {{ total_clients }} total unique clients.</p>
+            <img src="/plot.png" alt="my plot">
+            {% endblock %}
+          </div>
         </div>
     </div>
 </div>
 {% endblock %}
-{% block b002%}
-<h1>{{ paid_inv }} paid invoices, {{ unpaid_inv }} unpaid invoices, {{ total_inv }} total invoices, and {{ total_clients }} total unique clients.</h1>
-<img src="/plot.png" alt="my plot">
-
-{% endblock %}
-
 </html>
 
