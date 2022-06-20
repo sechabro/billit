@@ -19,16 +19,18 @@ class InvoiceModel(db.Model):
     __tablename__ = 'invoices'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     client = db.Column(db.Integer, ForeignKey('clients.id'), nullable=False)
-    date_created = db.Column(db.Date, nullable=False)
-    date_sent = db.Column(db.Date, nullable=False)
+    date_sent = db.Column(db.Date, nullable=True)
+    date_paid = db.Column(db.Date, nullable=True)
+    services = db.Column(db.Text, nullable=True)
     amount = db.Column(db.Float, nullable=False)
     paid = db.Column(db.Boolean, nullable=False)
 
-    def __init__(self, id, client, date_created, date_sent, amount, paid):
+    def __init__(self, id, client, date_sent, date_paid, services, amount, paid):
         self.id = id
         self.client = client
-        self.date_created = date_created
         self.date_sent = date_sent
+        self.date_paid = date_paid
+        self.services = services
         self.amount = amount
         self.paid = paid
 
@@ -36,8 +38,8 @@ class InvoiceModel(db.Model):
         return {
             'id': self.id,
             'client': self.client,
-            'date_created': self.date_created.isoformat(),
             'date_sent': self.date_sent.isoformat(),
+            'date_paid': self.date_paid.isoformat(),
             'amount': self.amount,
             'paid': self.paid
         }
@@ -48,15 +50,17 @@ class ClientModel(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     company = db.Column(db.Text, nullable=False)
     contact = db.Column(db.String(128), nullable=False)
+    email = db.Column(db.String(128), nullable=True)
     address = db.Column(db.Text, nullable=False)
     city = db.Column(db.String(128), nullable=False)
     state = db.Column(db.String(128), nullable=False)
     zipcode = db.Column(db.String(), nullable=False)
 
-    def __init__(self, id, company, contact, address, city, state, zipcode):
+    def __init__(self, id, company, contact, email, address, city, state, zipcode):
         self.id = id
         self.company = company
         self.contact = contact
+        self.email = email
         self.address = address
         self.city = city
         self.state = state
@@ -67,6 +71,7 @@ class ClientModel(db.Model):
             'id': self.id,
             'company': self.company,
             'contact': self.contact,
+            'email': self.email,
             'address': self.address,
             'city': self.city,
             'state': self.state,

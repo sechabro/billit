@@ -55,6 +55,11 @@
             <img src="/plot.png" alt="my plot">
             {% endblock %}
           </div>
+          <div class="card shadow-lg px-4 py-4" style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
+            {% block b003%}
+            <p>{{ billed_total }} billed. {{ collected_total }} received.</p>
+            {% endblock %}
+          </div>
         </div>
     </div>
 </div>

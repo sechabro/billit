@@ -10,9 +10,11 @@ import numpy as np, pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigCan
 from matplotlib.backends.backend_template import FigureManagerTemplate
-import base64, io
+import base64
+from io import StringIO, BytesIO
 from matplotlib.figure import Figure
 import seaborn as sns
+
 engine = create_engine('postgresql://postgres@localhost:5432/billit')
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -23,7 +25,7 @@ paid_inv = session.query(InvoiceModel).filter(InvoiceModel.paid == True).count()
 unpaid_inv = session.query(InvoiceModel).filter(InvoiceModel.paid == False).count()
 total_inv = session.query(InvoiceModel).count()
 # %%
-x = ['Invoice Status']
+'''x = ['Invoice Status']
 paid = [paid_inv]
 unpaid = [unpaid_inv] 
 x_axis = np.arange(len(x))
@@ -36,7 +38,7 @@ plt.xticks(x_axis, x)
 plt.ylabel('Number of Invoices')
 plt.title('Number of Paid and Unpaid Invoices')
 plt.legend()
-plt.show()
+plt.show()'''
 # %%
 '''fig, ax = plt.subplots(figsize=(6,6))
 ax = sns.set_style(style='darkgrid')
@@ -55,23 +57,25 @@ plt.title('Paid vs. Unpaid')
 plt.pie(sections, labels=labels, wedgeprops={'edgecolor': 'black'}, colors=colors)
 plt.axis('equal')
 #plt.savefig('app/static/images/invoice_payment_data.png')
-plt.show()
+plt.show()'''
 
 
 
-img = io.BytesIO()
+
 sections = [paid_inv, unpaid_inv]
 labels = ['Paid Invoices', 'Unpaid Invoices']
 colors = ['green', 'red']
 plt.title('Paid vs. Unpaid')
 plt.pie(sections, labels=labels, wedgeprops={'edgecolor': 'black'}, colors=colors)
-plt.savefig(img, format='png')
-img.seek(0)
-plot_url = base64.b64encode(img.getvalue()).decode()
-return '<img src="data:image/png;base64,{}">'.format(plot_url)
+plt.savefig('app/static/images/invoice_payment_data.png')
+
+#plt.savefig(img, format='png')
+#img.seek(0)
+#plot_url = base64.b64encode(img.getvalue()).decode()
+#return '<img src="data:image/png;base64,{}">'.format(plot_url)
 
 
-df = pd.DataFrame({
+'''df = pd.DataFrame({
     'paid': [paid_inv], 
     'unpaid': [unpaid_inv],
     'total': [total_inv]})
@@ -79,3 +83,5 @@ ax = plt.subplot()
 ax.bar(x = df['paid'], y = df['total'], color='green', height='55')
 ax.bar(x = df['unpaid'], y = df['total'], color='red', height='55')
 plt.show()'''
+
+# %%

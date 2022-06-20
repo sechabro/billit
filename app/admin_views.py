@@ -20,11 +20,17 @@ paid_inv = session.query(InvoiceModel).filter(InvoiceModel.paid == True).count()
 unpaid_inv = session.query(InvoiceModel).filter(InvoiceModel.paid == False).count()
 total_clients = session.query(ClientModel).count()
 total_inv = session.query(InvoiceModel).count()
+billed_total_query = session.query(func.sum(InvoiceModel.amount))
+billed_total = billed_total_query.scalar()
+collected_total_query = session.query(func.sum(InvoiceModel.amount)).filter(InvoiceModel.paid == True)
+collected_total = collected_total_query.scalar()
+
 
 @app.route('/dashboard')
 def dashboard_index():
 
-    return render_template('admin/dashboard.html', paid_inv = paid_inv, unpaid_inv = unpaid_inv, total_inv=total_inv, total_clients = total_clients)
+    return render_template('admin/dashboard.html', paid_inv = paid_inv, unpaid_inv = unpaid_inv, total_inv=total_inv,
+    total_clients = total_clients, billed_total=billed_total, collected_total=collected_total)
 
 @app.route('/plot.png')
 def plot_png():
@@ -35,9 +41,13 @@ def plot_png():
 
 def create_figure():
     fig = Figure()
-    axis = fig.add_subplot(1, 1, 1)
+    gs = fig.add_gridspec(1, 2)
+    ax1 = fig.add_subplot(gs[0, 0])
+    ax2 = fig.add_subplot(gs[0, 1])
     xs = range(paid_inv)
+    xs2 = range(unpaid_inv)
     ys1 = range(total_inv)
-    axis.hist(xs, ys1)
+    ax1.hist(xs, ys1)
+    ax2.hist(xs2, ys1)
     return fig
     
