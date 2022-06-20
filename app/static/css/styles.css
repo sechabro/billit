@@ -11,6 +11,20 @@
     min-height: 200px;
 }
 
+
 .card {
     margin-bottom: 2rem;
+}
+
+
+.bottom_align {
+    margin-bottom: 5px
+}
+
+.fa-color-change {
+    color: green;
+}
+
+.fa-color-change2 {
+    color: rgb(255, 197, 90)
 }

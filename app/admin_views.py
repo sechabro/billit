@@ -21,9 +21,9 @@ unpaid_inv = session.query(InvoiceModel).filter(InvoiceModel.paid == False).coun
 total_clients = session.query(ClientModel).count()
 total_inv = session.query(InvoiceModel).count()
 billed_total_query = session.query(func.sum(InvoiceModel.amount))
-billed_total = billed_total_query.scalar()
+billed_total = round(billed_total_query.scalar(), 2)
 collected_total_query = session.query(func.sum(InvoiceModel.amount)).filter(InvoiceModel.paid == True)
-collected_total = collected_total_query.scalar()
+collected_total = round(collected_total_query.scalar(), 2)
 
 
 @app.route('/dashboard')

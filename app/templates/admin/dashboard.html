@@ -5,7 +5,7 @@
 {% block b001 %}
 <div class="container">
     <div class="row row-content">
-        <div class="col-sm-8 mx-auto">
+        <div class="col-md-8 mx-auto">
           <div class="card shadow-lg" style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
               <form class="px-4 py-4">
                   <div class="form-group">
@@ -48,16 +48,49 @@
               </form>
           </div>
         </div>
-        <div class="col-sm-4 mx-auto">
+        <div class="col-md-4 mx-auto">
           <div class="card shadow-lg px-4 py-4" style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
             {% block b002%}
-            <p>{{ paid_inv }} paid invoices, {{ unpaid_inv }} unpaid invoices, {{ total_inv }} total invoices, and {{ total_clients }} total unique clients.</p>
+            <p> paid invoices, {{ unpaid_inv }} unpaid invoices, {{ total_inv }} total invoices, and  total unique clients.</p>
             <img src="/plot.png" alt="my plot">
             {% endblock %}
           </div>
           <div class="card shadow-lg px-4 py-4" style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
             {% block b003%}
-            <p>{{ billed_total }} billed. {{ collected_total }} received.</p>
+            <div class="container bottom-align">
+                <div class="row">
+                  <div class="col-md-8 mx-auto">
+                    <h4>${{ billed_total }}</h4>  
+                  </div>
+                  <div class="col-md-4 mx-auto">
+                    <i class="fa-solid fa-xl fa-file-invoice-dollar"></i>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-8 mx-auto">
+                    <h4>${{ collected_total }}</h4>
+                  </div>
+                  <div class="col-md-4 mx-auto"> 
+                    <i class="fa-solid fa-xl fa-hand-holding-dollar fa-color-change"></i>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-8 mx-auto">
+                    <h4>{{ total_clients }}</h4>
+                  </div>
+                  <div class="col-md-4 mx-auto"> 
+                    <i class="fa-solid fa-xl fa-address-book"></i>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-8 mx-auto">
+                    <h4>{{ unpaid_inv }}</h4>
+                  </div>
+                  <div class="col-md-4 mx-auto"> 
+                    <i class="fa-solid fa-xl fa-hourglass fa-color-change2"></i>
+                  </div>
+                </div>
+            </div>
             {% endblock %}
           </div>
         </div>
