@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from app import app
-from flask import render_template, send_file, Flask, send_from_directory, Response
+from flask import jsonify, render_template, send_file, Flask, send_from_directory, Response
 from app.models import InvoiceModel, ClientModel
 from sqlalchemy import Boolean, create_engine, insert, select, func, distinct, true, values 
 from sqlalchemy.orm import sessionmaker, declarative_base
@@ -26,11 +26,18 @@ collected_total_query = session.query(func.sum(InvoiceModel.amount)).filter(Invo
 collected_total = round(collected_total_query.scalar(), 2)
 
 
+
 @app.route('/dashboard')
 def dashboard_index():
+    #unpaid tab view:
+    unpaid = InvoiceModel.query.filter(InvoiceModel.paid == False)
+    unpaid_list = []
+    for u in unpaid:
+        unpaid_list.append(u.serialize())
+
 
     return render_template('admin/dashboard.html', paid_inv = paid_inv, unpaid_inv = unpaid_inv, total_inv=total_inv,
-    total_clients = total_clients, billed_total=billed_total, collected_total=collected_total)
+    total_clients = total_clients, billed_total=billed_total, collected_total=collected_total, unpaid_list=unpaid_list)
 
 @app.route('/plot.png')
 def plot_png():
@@ -50,4 +57,3 @@ def create_figure():
     ax1.hist(xs, ys1)
     ax2.hist(xs2, ys1)
     return fig
-    

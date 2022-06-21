@@ -7,7 +7,7 @@
     <div class="row row-content">
         <div class="col-md-8 mx-auto">
           <div class="card shadow-lg" style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
-              <form class="px-4 py-4">
+              <form class="px-4 py-4" action="/make-inv" method="POST">
                   <div class="form-group">
                     <label for="select_client">Client</label> 
                     <div>
@@ -50,13 +50,14 @@
         </div>
         <div class="col-md-4 mx-auto">
           <div class="card shadow-lg px-4 py-4" style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
-            {% block b002%}
+            {% block b002 %}
             <p> paid invoices, {{ unpaid_inv }} unpaid invoices, {{ total_inv }} total invoices, and  total unique clients.</p>
             <img src="/plot.png" alt="my plot">
+
             {% endblock %}
           </div>
           <div class="card shadow-lg px-4 py-4" style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
-            {% block b003%}
+            {% block b003 %}
             <div class="container bottom-align">
                 <div class="row">
                   <div class="col-md-8 mx-auto">
@@ -91,6 +92,11 @@
                   </div>
                 </div>
             </div>
+            {% endblock %}
+            {% block b004 %}
+            {% for invoice in unpaid_list %}
+              {{ invoice }}
+            {% endfor %}
             {% endblock %}
           </div>
         </div>
