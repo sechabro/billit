@@ -32,15 +32,6 @@ def get_unpaid():
     result = jsonify(unpaid_list)
     return result
 
-for r in len(result):
-        invoice_number = result['id']
-        client = result['client']
-        date_sent = result['date_sent']
-        amount = result['amount']
-        return invoice_number, client, date_sent, amount
-
-
-
 @bp.route('/make-inv', methods=['GET', 'POST'])
 def create_invoice():
     if request.method == 'POST':
