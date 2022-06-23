@@ -1,0 +1,12 @@
+{% extends "admin/templates/dashboard_template.html" %}
+{% block col1 %}
+<div class="col-md-8 mx-auto">
+    <div class="card shadow-lg" style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
+      {% for invoice in unpaid_list %}
+      {{ invoice }}
+      {% endfor %}
+    </div>
+</div>
+{% endblock %}
+</html>
+

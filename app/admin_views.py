@@ -15,7 +15,7 @@ engine = create_engine('postgresql://postgres@localhost:5432/billit')
 Session = sessionmaker(bind=engine)
 session = Session()
 
-#Dashboard invoice data
+#Dashboard data
 paid_inv = session.query(InvoiceModel).filter(InvoiceModel.paid == True).count()
 unpaid_inv = session.query(InvoiceModel).filter(InvoiceModel.paid == False).count()
 total_clients = session.query(ClientModel).count()
@@ -29,15 +29,20 @@ collected_total = round(collected_total_query.scalar(), 2)
 
 @app.route('/dashboard')
 def dashboard_index():
-    #unpaid tab view:
+    return render_template('admin/templates/dashboard_template.html', paid_inv = paid_inv, unpaid_inv = unpaid_inv, total_inv=total_inv,
+    total_clients = total_clients, billed_total=billed_total, collected_total=collected_total)
+
+@app.route('/make-inv', methods=['GET', 'POST'])
+def make_inv():
+    return render_template('admin/make-inv.html')
+
+@app.route('/unpaid', methods=['GET', 'POST'])
+def unpaid_view():
     unpaid = InvoiceModel.query.filter(InvoiceModel.paid == False)
     unpaid_list = []
     for u in unpaid:
         unpaid_list.append(u.serialize())
-
-
-    return render_template('admin/dashboard.html', paid_inv = paid_inv, unpaid_inv = unpaid_inv, total_inv=total_inv,
-    total_clients = total_clients, billed_total=billed_total, collected_total=collected_total, unpaid_list=unpaid_list)
+    return render_template('admin/unpaid.html', unpaid_list=unpaid_list)
 
 @app.route('/plot.png')
 def plot_png():
@@ -57,3 +62,4 @@ def create_figure():
     ax1.hist(xs, ys1)
     ax2.hist(xs2, ys1)
     return fig
+
