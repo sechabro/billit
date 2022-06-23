@@ -2,9 +2,11 @@
 {% block col1 %}
 <div class="col-md-8 mx-auto">
     <div class="card shadow-lg" style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
+      <ul>
       {% for invoice in unpaid_list %}
-      {{ invoice }}
+      <li>{{ invoice }}</li>
       {% endfor %}
+      </ul>
     </div>
 </div>
 {% endblock %}
