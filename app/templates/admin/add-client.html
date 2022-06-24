@@ -1,0 +1,50 @@
+{% extends "admin/templates/dashboard_template.html" %}
+{% block col1 %}
+<div class="col-md-8 mx-auto">
+    <div class="card shadow-lg max-length text-center" style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
+      <div class="card-header">
+        <h2>Add Client</h2>
+      </div>
+<form class="px-4 py-4 table-content text-left">
+          <div class="form-group">
+            <label for="company_name">Company Name</label> 
+            <input id="company_name" name="company_name" placeholder="Enter company name..." type="text" class="form-control" required="required">
+          </div>
+          <div class="form-group">
+            <label for="contact">Contact</label> 
+            <input id="contact" name="contact" placeholder="Enter first and last name of contact..." type="text" class="form-control" required="required">
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label> 
+            <input id="email" name="email" placeholder="Enter client email address..." type="text" class="form-control" required="required">
+          </div>
+          <div class="form-group">
+            <label for="street_address">Street Address</label> 
+            <input id="street_address" name="street_address" placeholder="Enter company street address..." type="text" class="form-control" required="required">
+          </div>
+          <div class="form-group">
+            <label for="city">City</label> 
+            <input id="city" name="city" placeholder="Enter client city..." type="text" class="form-control" required="required">
+          </div>
+          <div class="form-group">
+            <label for="state">State</label> 
+            <div>
+              <select id="state" name="state" class="custom-select" aria-describedby="stateHelpBlock" required="required">
+                <option value="rabbit">Rabbit</option>
+                <option value="duck">Duck</option>
+              </select> 
+              <span id="stateHelpBlock" class="form-text text-muted">Select client state</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="zip_code">Zip Code</label> 
+            <input id="zip_code" name="zip_code" placeholder="Enter five-digit zipcode" type="text" class="form-control" required="required">
+          </div> 
+          <div class="form-group">
+            <button name="submit" type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+</html>

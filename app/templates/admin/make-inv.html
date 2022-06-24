@@ -1,9 +1,11 @@
 {% extends "admin/templates/dashboard_template.html" %}
-
 {% block col1 %}
 <div class="col-md-8 mx-auto">
-    <div class="card shadow-lg" style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
-        <form class="px-4 py-4" action="/make-inv" method="POST">
+    <div class="card shadow-lg max-length text-center" style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
+      <div class="card-header">
+        <h2>Create Invoice</h2>
+      </div>
+        <form class="px-4 py-4 table-content text-left" action="/make-inv" method="POST">
             <div class="form-group">
               <label for="select_client">Client</label> 
               <div>
@@ -21,7 +23,7 @@
             </div>
             <div class="form-group">
               <label for="textarea">Services</label> 
-              <textarea id="textarea" name="textarea" cols="40" rows="4" class="form-control" aria-describedby="textareaHelpBlock"></textarea> 
+              <textarea id="textarea" name="textarea" cols="40" rows="3" class="form-control" aria-describedby="textareaHelpBlock"></textarea> 
               <span id="textareaHelpBlock" class="form-text text-muted">Enter order charges</span>
             </div>
             <div class="form-group">

@@ -13,6 +13,7 @@
                             <th>Client</th>
                             <th>Date Sent</th>
                             <th>Amount</th>
+                            <th colspan="2">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="table">
@@ -22,6 +23,12 @@
                             <td>{{invoice['client']}}</td>
                             <td>{{invoice['date_sent']}}</td>
                             <td>${{invoice['amount']}}</td>
+                            <td>
+                              <a href="#" class="btn btn-primary btn-warning">Edit <span class="fa-solid fa-file-pen"></span></a>
+                            </td>
+                            <td>
+                              <a href="#" class="btn btn-primary btn-danger">Delete <span class="fa-solid fa-circle-exclamation"></span></a>
+                            </td>
                           {% endfor %}
                         </tr>
                     </tbody>
