@@ -1,12 +1,35 @@
 {% extends "admin/templates/dashboard_template.html" %}
 {% block col1 %}
 <div class="col-md-8 mx-auto">
-    <div class="card shadow-lg" style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
-      <ul>
-      {% for invoice in unpaid_list %}
-      <li>{{ invoice }}</li>
-      {% endfor %}
-      </ul>
+    <div class="card shadow-lg max-length text-center" style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
+      <div class="card-header">
+            <h2>Unpaid Invoices</h2>
+      </div>
+            <div class="table-responsive">
+                <table class="table table-sm table-content table-striped table-bordered">
+                    <thead>
+                        <tr class="bg-primary text-light sticky-top">
+                            <th>Invoice ID</th>
+                            <th>Client</th>
+                            <th>Date Sent</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table">
+                      {% for invoice in unpaid_list[0:-1] %}
+                        <tr>
+                            <th>{{invoice['id']}}</th>
+                            <td>{{invoice['client']}}</td>
+                            <td>{{invoice['date_sent']}}</td>
+                            <td>${{invoice['amount']}}</td>
+                          {% endfor %}
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+      <div class="card-footer text-muted">
+        <p>Edit, delete, or mark as "paid".</p>
+      </div>
     </div>
 </div>
 {% endblock %}

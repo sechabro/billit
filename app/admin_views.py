@@ -9,6 +9,7 @@ from matplotlib.pyplot import savefig
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import io
+from jinja2 import Environment, FileSystemLoader
 
 #Connect
 engine = create_engine('postgresql://postgres@localhost:5432/billit')
@@ -34,7 +35,8 @@ def dashboard_index():
 
 @app.route('/make-inv', methods=['GET', 'POST'])
 def make_inv():
-    return render_template('admin/make-inv.html')
+    return render_template('admin/make-inv.html', paid_inv = paid_inv, unpaid_inv = unpaid_inv, total_inv=total_inv,
+    total_clients = total_clients, billed_total=billed_total, collected_total=collected_total)
 
 @app.route('/unpaid', methods=['GET', 'POST'])
 def unpaid_view():
@@ -42,7 +44,8 @@ def unpaid_view():
     unpaid_list = []
     for u in unpaid:
         unpaid_list.append(u.serialize())
-    return render_template('admin/unpaid.html', unpaid_list=unpaid_list)
+    return render_template('admin/unpaid.html', unpaid_list=unpaid_list, paid_inv = paid_inv, unpaid_inv = unpaid_inv, total_inv=total_inv,
+    total_clients = total_clients, billed_total=billed_total, collected_total=collected_total)
 
 @app.route('/plot.png')
 def plot_png():

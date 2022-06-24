@@ -28,3 +28,13 @@
 .fa-color-change2 {
     color: rgb(255, 197, 90)
 }
+
+.max-length {
+    height: 580px;
+}
+
+.table-content {
+    overflow: auto;
+    margin-bottom: 10px;
+}
+
