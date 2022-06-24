@@ -47,6 +47,11 @@ def unpaid_view():
     return render_template('admin/unpaid.html', unpaid_list=unpaid_list, paid_inv = paid_inv, unpaid_inv = unpaid_inv, total_inv=total_inv,
     total_clients = total_clients, billed_total=billed_total, collected_total=collected_total)
 
+@app.route('/add-client', methods=['GET', 'POST'])
+def add_client():
+    return render_template('admin/add-client.html', paid_inv = paid_inv, unpaid_inv = unpaid_inv, total_inv=total_inv,
+    total_clients = total_clients, billed_total=billed_total, collected_total=collected_total)
+
 @app.route('/plot.png')
 def plot_png():
     fig = create_figure()
