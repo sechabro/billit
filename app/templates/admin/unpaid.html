@@ -27,10 +27,31 @@
                               <a href="#" class="btn btn-primary btn-warning">Edit <span class="fa-solid fa-file-pen"></span></a>
                             </td>
                             <td>
-                              <a href="#" class="btn btn-primary btn-danger">Delete <span class="fa-solid fa-circle-exclamation"></span></a>
-                            </td>
-                          {% endfor %}
+                              <a role="button" href="{{url_for('delete', id={{invoice['id']}}" id="delete_by_inv_num" class="btn btn-primary btn-danger">Delete <span class="fa-solid fa-circle-exclamation"></span></a>
+                            </td>         
                         </tr>
+                        <div id="delete_modal" class="modal fade" role="dialog">
+                          <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                  <div class="modal-header">
+                                      <h3 class="modal-title">Delete this invoice?</h3>
+                                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                  </div>
+                              <div class="container-fluid">
+                                  <form>
+                                    <div class="modal-body">
+                                      <div class="form-row">
+                                        <button type="button" class="btn btn-secondary btn-sm ml-auto"
+                                            data-dismiss="modal">No, go back!</button>
+                                        <button data-dismiss="modal" class="btn btn-primary btn-sm ml-1">Delete it!</button>
+                                      </div>
+                                    </div>
+                                  </form>
+                                </div>
+                              </div>
+                          </div>
+                        </div>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -39,6 +60,7 @@
       </div>
     </div>
 </div>
+
 {% endblock %}
 </html>
 

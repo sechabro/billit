@@ -1,15 +1,16 @@
 from flask_sqlalchemy import SQLAlchemy
 from app import app
-from flask import jsonify, render_template, send_file, Flask, send_from_directory, Response
-from app.models import InvoiceModel, ClientModel
-from sqlalchemy import Boolean, create_engine, insert, select, func, distinct, true, values 
+from flask import Blueprint, jsonify, render_template, send_file, Flask, send_from_directory, Response
+from app.models import InvoiceModel, ClientModel, db
+from sqlalchemy import Boolean, create_engine, insert, select, func, distinct, true, values, delete 
 from sqlalchemy.orm import sessionmaker, declarative_base
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import savefig
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import io
-from jinja2 import Environment, FileSystemLoader
+
+#bp = Blueprint('invoices', __name__, url_prefix='/dashboard')
 
 #Connect
 engine = create_engine('postgresql://postgres@localhost:5432/billit')
@@ -33,12 +34,7 @@ def dashboard_index():
     return render_template('admin/templates/dashboard_template.html', paid_inv = paid_inv, unpaid_inv = unpaid_inv, total_inv=total_inv,
     total_clients = total_clients, billed_total=billed_total, collected_total=collected_total)
 
-@app.route('/make-inv', methods=['GET', 'POST'])
-def make_inv():
-    return render_template('admin/make-inv.html', paid_inv = paid_inv, unpaid_inv = unpaid_inv, total_inv=total_inv,
-    total_clients = total_clients, billed_total=billed_total, collected_total=collected_total)
-
-@app.route('/unpaid', methods=['GET', 'POST'])
+@app.route('/dashboard/unpaid', methods=['GET', 'POST'])
 def unpaid_view():
     unpaid = InvoiceModel.query.filter(InvoiceModel.paid == False)
     unpaid_list = []
@@ -46,6 +42,23 @@ def unpaid_view():
         unpaid_list.append(u.serialize())
     return render_template('admin/unpaid.html', unpaid_list=unpaid_list, paid_inv = paid_inv, unpaid_inv = unpaid_inv, total_inv=total_inv,
     total_clients = total_clients, billed_total=billed_total, collected_total=collected_total)
+
+'''@app.route('dashboard/delete/<int: id>', methods=['DELETE'])
+def delete_invoice(id: int):
+    inv = InvoiceModel.query.get_or_404(id)
+    try:
+        db.session.delete(inv)
+        db.session.commit()
+        flash('Invoice deleted.')
+    except:
+        flash('Failed to delete invoice!')'''
+
+@app.route('/make-inv', methods=['GET', 'POST'])
+def make_inv():
+    return render_template('admin/make-inv.html', paid_inv = paid_inv, unpaid_inv = unpaid_inv, total_inv=total_inv,
+    total_clients = total_clients, billed_total=billed_total, collected_total=collected_total)
+
+
 
 @app.route('/add-client', methods=['GET', 'POST'])
 def add_client():
