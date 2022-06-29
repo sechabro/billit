@@ -23,6 +23,7 @@ paid_inv = session.query(InvoiceModel).filter(
 unpaid_inv = session.query(InvoiceModel).filter(
     InvoiceModel.paid == False).count()
 total_clients = session.query(ClientModel).count()
+
 total_inv = session.query(InvoiceModel).count()
 billed_total_query = session.query(func.sum(InvoiceModel.amount))
 billed_total = round(billed_total_query.scalar(), 2)
@@ -43,8 +44,32 @@ def unpaid_view():
     unpaid_list = []
     for u in unpaid:
         unpaid_list.append(u.serialize())
-    return render_template('admin/unpaid.html', unpaid_list=unpaid_list, paid_inv=paid_inv, unpaid_inv=unpaid_inv, total_inv=total_inv,
+    client_select = InvoiceModel.query.all()
+    client_list = []
+    for c in client_select:
+        client_list.append(c.serialize())
+    return render_template('admin/unpaid.html', client_list=client_list, unpaid_list=unpaid_list, paid_inv=paid_inv, unpaid_inv=unpaid_inv, total_inv=total_inv,
                            total_clients=total_clients, billed_total=billed_total, collected_total=collected_total)
+
+
+@app.route('/dashboard/update/<int:inv_id>', methods=['GET', 'POST'])
+def update_invoice(inv_id: int):
+    inv = InvoiceModel.query.filter(InvoiceModel.id == inv_id)
+    inv_to_update = []
+    for i in inv:
+        inv_to_update.append(i.serialize())
+
+    client_select = ClientModel.query.all()
+    client_list = []
+    for c in client_select:
+        client_list.append(c.serialize())
+    print(inv_to_update)
+    unpaid = InvoiceModel.query.filter(InvoiceModel.paid == False)
+    unpaid_list = []
+    for u in unpaid:
+        unpaid_list.append(u.serialize())
+    return render_template('admin/update_inv.html', inv_to_update=inv_to_update, unpaid_list=unpaid_list, client_list=client_list, total_clients=total_clients, paid_inv=paid_inv, unpaid_inv=unpaid_inv, total_inv=total_inv,
+                           billed_total=billed_total, collected_total=collected_total)
 
 
 @app.route('/dashboard/delete/<int:inv_id>', methods=['GET', 'POST'])

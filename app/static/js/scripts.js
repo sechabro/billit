@@ -1,8 +1,10 @@
-$(".btn.btn-danger").click(function () {
-    $("#delete_modal").modal('toggle');
+$(".btn.btn-warning").click(function() {
+    $("#update_modal").modal('toggle');
 });
 
-
+$(document).ready(function() {
+    $("#update_modal").modal('show');
+})
 
 /*$(document).ready(function() {
     $('form').on('submit', function(event) {

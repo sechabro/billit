@@ -1,11 +1,13 @@
 {% extends "admin/templates/dashboard_template.html" %}
 {% block col1 %}
+
 <div class="col-md-8 mx-auto">
     <div class="card shadow-lg max-length text-center" style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
       <div class="card-header">
             <h2>Unpaid Invoices</h2>
       </div>
             <div class="table-responsive">
+
                 <table class="table table-sm table-content table-striped table-bordered">
                     <thead>
                         <tr class="bg-primary text-light sticky-top">
@@ -24,37 +26,23 @@
                             <td>{{invoice['date_sent']}}</td>
                             <td>${{invoice['amount']}}</td>
                             <td>
-                              <a href="#" class="btn btn-primary btn-warning">Edit <span class="fa-solid fa-file-pen"></span></a>
+                              <a href="update/{{invoice['id']}}" role="button" id="update_by_invoice_num" class="btn btn-warning">Edit <span class="fa-solid fa-file-pen"></span></a>
                             </td>
                             <td>
                               <a href="delete/{{invoice['id']}}" method="POST" role="button" id="delete_by_inv_num" class="btn btn-danger">Delete <span class="fa-solid fa-circle-exclamation"></span></a>
                             </td>         
                         </tr>
-                        <div id="delete_modal" class="modal fade" role="dialog">
-                          <div class="modal-dialog" role="document">
-                              <div class="modal-content">
-                                  <div class="modal-header">
-                                      <h3 class="modal-title">Delete this invoice?</h3>
-                                      <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                  </div>
-                              <!--<div class="container-fluid">
-                                  <form id="delete-form">
-                                    <div class="modal-body">
-                                      <div class="form-row">
-                                        <button type="button" class="btn btn-secondary btn-sm ml-auto"
-                                            data-dismiss="modal">No, go back!</button>
-                                        <a href="delete_invoice/{{invoice['id']}}" method="POST" role="button" class="btn btn-danger btn-sm ml-1" >Yep, delete it!</a>
-                                      </div>
-                                    </div>
-                                  </form>
-                                </div>-->
+                        {% endfor %} 
+                        {% block update_modal %}
+                        {% endblock %}
                               </div>
                           </div>
                         </div>
-                        {% endfor %}
+                        
                     </tbody>
                 </table>
             </div>
+            
       <div class="card-footer text-muted">
         <p>Edit, delete, or mark as "paid".</p>
       </div>
@@ -62,5 +50,6 @@
 </div>
 
 {% endblock %}
+
 </html>
 
