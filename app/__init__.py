@@ -4,6 +4,7 @@ from flask_migrate import Migrate
 
 app = Flask(__name__, instance_relative_config=True, template_folder='templates')
 
+
 def create_app(test_config=None):
     
     app.config.from_mapping(

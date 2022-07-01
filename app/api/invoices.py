@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, abort, redirect, request, render_template
+from flask import Blueprint, jsonify, abort, redirect, request, render_template, make_response
 import requests as req
 import sqlalchemy
 from ..models import InvoiceModel, db
@@ -22,6 +22,7 @@ def client_index():
     for i in invoices:
         result.append(i.serialize()) # appending results to result list
     return jsonify(result) # return JSON response
+
 
 '''@bp.route('/unpaid', methods=['GET'])
 def get_unpaid():

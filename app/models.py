@@ -40,6 +40,7 @@ class InvoiceModel(db.Model):
             'client': self.client,
             'date_sent': self.date_sent.isoformat(),
             'date_paid': self.date_paid.isoformat(),
+            'services': self.services,
             'amount': self.amount,
             'paid': self.paid
         }

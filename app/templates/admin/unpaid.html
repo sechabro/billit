@@ -1,55 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Document</title>
+</head>
+
+<body>
+
 {% extends "admin/templates/dashboard_template.html" %}
-{% block col1 %}
+{% block nav %}
+<nav class="navbar navbar-expand-xl navbar-dark bg-dark">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">My Account <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Link</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Sort Invoices
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{{ url_for('invoice_index') }}">By All</a>
+          <a class="dropdown-item" href="#">By Client</a>
+          <a class="dropdown-item disabled">By Unpaid</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Create Invoice</a>
+          <a class="dropdown-item" href="#">Add Client</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+{% endblock %}
 
-<div class="col-md-8 mx-auto">
-    <div class="card shadow-lg max-length text-center" style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
+
+  {% block col1 %}
+  <div class="col-md-7 mx-auto">
+    <div class="card shadow-lg max-length text-center"
+      style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
       <div class="card-header">
-            <h2>Unpaid Invoices</h2>
+        <h2>Unpaid Invoices</h2>
       </div>
-            <div class="table-responsive">
-
-                <table class="table table-sm table-content table-striped table-bordered">
-                    <thead>
-                        <tr class="bg-primary text-light sticky-top">
-                            <th>Invoice ID</th>
-                            <th>Client</th>
-                            <th>Date Sent</th>
-                            <th>Amount</th>
-                            <th colspan="2">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="table">
-                      {% for invoice in unpaid_list[0:-1] %}
-                        <tr>
-                            <th>{{invoice['id']}}</th>
-                            <td>{{invoice['client']}}</td>
-                            <td>{{invoice['date_sent']}}</td>
-                            <td>${{invoice['amount']}}</td>
-                            <td>
-                              <a href="update/{{invoice['id']}}" role="button" id="update_by_invoice_num" class="btn btn-warning">Edit <span class="fa-solid fa-file-pen"></span></a>
-                            </td>
-                            <td>
-                              <a href="delete/{{invoice['id']}}" method="POST" role="button" id="delete_by_inv_num" class="btn btn-danger">Delete <span class="fa-solid fa-circle-exclamation"></span></a>
-                            </td>         
-                        </tr>
-                        {% endfor %} 
-                        {% block update_modal %}
-                        {% endblock %}
-                              </div>
-                          </div>
-                        </div>
-                        
-                    </tbody>
-                </table>
-            </div>
-            
+      <div class="table-responsive">                               
+        <table class="table table-sm table-content table-striped table-bordered">
+          <thead>
+            <tr class="bg-primary text-light sticky-top">
+              <th>Invoice ID</th>
+              <th>Client</th>
+              <th>Date Sent</th>
+              <th>Amount</th>
+              <th colspan="2">Actions</th>
+            </tr>
+          </thead>
+        
+            <tbody class="table">
+              {% for invoice in unpaid_list[0:-1] %}
+              <tr>
+                  <th><input type="hidden" class="inv_id" value="{{invoice['id']}}">{{invoice['id']}}</th>
+                  <td><input type="hidden" class="client_id" value="{{invoice['client']}}">{{invoice['client']}}</td>
+                  <td><input type="hidden" class="date_sent" value="{{invoice['date_sent']}}">{{invoice['date_sent']}}</td>
+                  <td><input type="hidden" class="inv_amount" value="{{invoice['amount']}}">${{invoice['amount']}}</td>
+                  <td>
+                    <a href="inv-prepop/{{invoice['id']}}" method="POST" role="button" id="update_submit" class="btn btn-warning">Edit <span
+                        class="fa-solid fa-file-pen"></span></button>
+                  </td>
+                <td>
+                  <a href="delete/{{invoice['id']}}" method="POST" role="button" id="delete_by_inv_num"
+                    class="btn btn-danger">Delete <span class="fa-solid fa-circle-exclamation"></span></a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          
+        </table>
+      </div>
       <div class="card-footer text-muted">
         <p>Edit, delete, or mark as "paid".</p>
       </div>
     </div>
-</div>
+  </div>
 
-{% endblock %}
+  {% block update_modal %}
+  {% endblock %}
+  {% endblock %}
+</body>
 
 </html>
-
