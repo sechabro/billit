@@ -71,12 +71,15 @@
                   <td><input type="hidden" class="date_sent" value="{{invoice['date_sent']}}">{{invoice['date_sent']}}</td>
                   <td><input type="hidden" class="inv_amount" value="{{invoice['amount']}}">${{invoice['amount']}}</td>
                   <td>
-                    <a href="inv-prepop/{{invoice['id']}}" method="POST" role="button" id="update_submit" class="btn btn-warning">Edit <span
+                    <form action="inv-prepop/{{invoice['id']}}" method="POST">
+                    <button type="submit" id="update_submit" class="btn btn-warning">Edit <span
                         class="fa-solid fa-file-pen"></span></button>
+                    </form>
                   </td>
                 <td>
-                  <a href="delete/{{invoice['id']}}" method="POST" role="button" id="delete_by_inv_num"
-                    class="btn btn-danger">Delete <span class="fa-solid fa-circle-exclamation"></span></a>
+                  <form action="delete/{{invoice['id']}}" method="POST">
+                  <button type="submit" id="delete_by_inv_num" class="btn btn-danger">Delete <span class="fa-solid fa-circle-exclamation"></span></button>
+                  </form>
                 </td>
               </tr>
               {% endfor %}
@@ -90,8 +93,7 @@
     </div>
   </div>
 
-  {% block update_modal %}
-  {% endblock %}
+
   {% endblock %}
 </body>
 

@@ -24,7 +24,6 @@ paid_inv = session.query(InvoiceModel).filter(
 unpaid_inv = session.query(InvoiceModel).filter(
     InvoiceModel.paid == False).count()
 total_clients = session.query(ClientModel).count()
-
 total_inv = session.query(InvoiceModel).count()
 billed_total_query = session.query(func.sum(InvoiceModel.amount))
 billed_total = round(billed_total_query.scalar(), 2)
@@ -33,17 +32,10 @@ collected_total_query = session.query(
 collected_total = round(collected_total_query.scalar(), 2)
 
 
-
-
-
 @app.route('/dashboard')
 def dashboard_index():
     return render_template('admin/templates/dashboard_template.html', paid_inv=paid_inv, unpaid_inv=unpaid_inv, total_inv=total_inv,
                            total_clients=total_clients, billed_total=billed_total, collected_total=collected_total)
-
-
-
-
 
 
 @app.route('/dashboard/all', methods=['GET', 'POST'])
@@ -60,9 +52,6 @@ def invoice_index():
                            total_clients=total_clients, billed_total=billed_total, collected_total=collected_total)
 
 
-
-
-
 @app.route('/dashboard/unpaid', methods=['GET', 'POST'])
 def unpaid_view():
     unpaid = InvoiceModel.query.filter(InvoiceModel.paid == False)
@@ -77,39 +66,34 @@ def unpaid_view():
                            total_clients=total_clients, billed_total=billed_total, collected_total=collected_total)
 
 
-
-
-
 @app.route('/dashboard/inv-prepop/<int:inv_id>', methods=['GET', 'POST'])
 def inv_passthrough(inv_id: int):
     inv = InvoiceModel.query.filter(InvoiceModel.id == inv_id)
-    inv_to_update = []
-    for i in inv:
-        inv_to_update.append(i.serialize())
-    invoice = inv_to_update[0]['id']
-    client_id = inv_to_update[0]['client']
+    if request.method == 'POST':
+        inv_to_update = []
+        for i in inv:
+            inv_to_update.append(i.serialize())
+        invoice = inv_to_update[0]['id']
+        client_id = inv_to_update[0]['client']
 
-    client_select = ClientModel.query.all()
-    client_list = []
-    for c in client_select:
-        client_list.append(c.serialize())
+        client_select = ClientModel.query.all()
+        client_list = []
+        for c in client_select:
+            client_list.append(c.serialize())
 
-    unpaid = InvoiceModel.query.filter(InvoiceModel.paid == False)
-    unpaid_list = []
-    for u in unpaid:
-        unpaid_list.append(u.serialize())
+        unpaid = InvoiceModel.query.filter(InvoiceModel.paid == False)
+        unpaid_list = []
+        for u in unpaid:
+            unpaid_list.append(u.serialize())
 
-    return render_template('admin/update_inv.html', client_id=client_id, inv_to_update=inv_to_update, unpaid_list=unpaid_list, client_list=client_list, total_clients=total_clients, paid_inv=paid_inv, unpaid_inv=unpaid_inv, total_inv=total_inv,
-                           billed_total=billed_total, collected_total=collected_total)
-
-
-
+        return render_template('admin/update.html', client_id=client_id, inv_to_update=inv_to_update, unpaid_list=unpaid_list, client_list=client_list, total_clients=total_clients, paid_inv=paid_inv, unpaid_inv=unpaid_inv, total_inv=total_inv,
+                               billed_total=billed_total, collected_total=collected_total)
 
 
 @app.route('/dashboard/delete/<int:inv_id>', methods=['GET', 'POST'])
 def delete_invoice(inv_id: int):
     inv = InvoiceModel.query.get_or_404(inv_id)
-    if request == 'POST':
+    if request.method == 'POST':
         try:
             db.session.delete(inv)
             db.session.commit()
@@ -118,9 +102,10 @@ def delete_invoice(inv_id: int):
         except:
             flash('Failed to delete invoice!')
             return redirect(url_for('unpaid_view'))
-
-
-
+    elif request.method == 'GET':
+        print('You are sending a GET request...')
+    else:
+        print('No request sent.')
 
 
 @app.route('/make-inv', methods=['GET', 'POST'])
@@ -129,16 +114,10 @@ def make_inv():
                            total_clients=total_clients, billed_total=billed_total, collected_total=collected_total)
 
 
-
-
-
 @app.route('/add-client', methods=['GET', 'POST'])
 def add_client():
     return render_template('admin/add-client.html', paid_inv=paid_inv, unpaid_inv=unpaid_inv, total_inv=total_inv,
                            total_clients=total_clients, billed_total=billed_total, collected_total=collected_total)
-
-
-
 
 
 @app.route('/plot.png')
@@ -147,6 +126,7 @@ def plot_png():
     output = io.BytesIO()
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
+
 
 def create_figure():
     fig = Figure()

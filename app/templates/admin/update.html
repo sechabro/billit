@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    {% extends "admin/templates/dashboard_template.html" %}
+    {% block head %}
+    {% endblock %}
+    {% block col1 %}
+    {% endblock %}
+    {% block col2 %}
+    {% endblock %}
+    {% block nav %}
+    {% endblock %}
+    {% block cards %}
+    {% endblock %}
+    {% block update_modal %}
+        <div class="container">
+            <div class="h-100 v-100 d-flex align-items-center justify-content-center">
+                <div class="big-logo">
+                    Bill It.             
+                </div>
+            </div>
+        </div>
+
+
+        <div id="update_modal" class="modal fade text-left" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content shadow-lg" style="border-radius: 1rem; border-width: 6px; border-color: #0004ff;">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Update this invoice?</h3>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="container-fluid">
+                        <form class="px-4 py-4 table-content" action="/make-inv" method="POST">
+    
+                            <div class="form-group">
+                                <label for="select_client">Client</label>
+                                <div>
+                                    <select id="select_client" name="select_client"
+                                        aria-describedby="select_clientHelpBlock" required="required" class="custom-select">
+                                        {% set default_client = client_id %}
+                                        <option value="{{ client_list[client_id - 1]['company'] }}">{{client_list[client_id - 1]['company']}}</option>
+                                        {% for client in client_list[0:-1] %}
+                                        <option value="{{ client['company'] }}">{{client['company']}}</option>
+                                        {% endfor %}
+                                        <option value="client_add">Add new client</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {% for inv in inv_to_update %}
+                                <label for="invoice_number">Invoice ID - this value can't be changed.</label>
+                                <p id="invoice_number" name="invoice_number" type="text" required="required"
+                                    class="form-control">{{inv['id']}}</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="invoice_amount">Amount</label>
+    
+                                <textarea id="invoice_amount" name="invoice_amount" cols="40" rows="1" class="form-control"
+                                    type="text" required="required">${{inv['amount']}}</textarea>
+    
+                            </div>
+                            <div class="form-group">
+                                <label for="textarea">Services</label>
+                                <textarea id="textarea" name="textarea" cols="40" rows="3" class="form-control"
+                                    aria-describedby="textareaHelpBlock">{{inv['services']}}</textarea>
+                                <span id="textareaHelpBlock" class="form-text text-muted">Enter order charges</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Paid</label>
+                                <div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input name="paid_boolean" id="paid_boolean_0" type="radio"
+                                            class="custom-control-input" value="true"
+                                            aria-describedby="paid_booleanHelpBlock">
+                                        <label for="paid_boolean_0" class="custom-control-label">Yes</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input name="paid_boolean" id="paid_boolean_1" type="radio"
+                                            class="custom-control-input" value="false"
+                                            aria-describedby="paid_booleanHelpBlock">
+                                        <label for="paid_boolean_1" class="custom-control-label">No</label>
+                                    </div>
+                                    <span id="paid_booleanHelpBlock" class="form-text text-muted">Has the invoice been
+                                        paid?</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+    
+                            <div class="form-group">
+                                <button id="update-cancel" type="button" class="btn btn-dark">Cancel</button>
+                                <button name="submit" type="submit" class="btn btn-primary">Update Invoice</button>
+                            </div>
+    
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+</body>
+</html>

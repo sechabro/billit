@@ -1,5 +1,5 @@
 from app import create_app
-from flask import render_template
+from flask import render_template, redirect
 from datetime import datetime
 import pytz, requests as req
 

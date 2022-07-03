@@ -11,82 +11,88 @@
 
 <body>
 
-{% extends "admin/templates/dashboard_template.html" %}
-{% block nav %}
-<nav class="navbar navbar-expand-xl navbar-dark bg-dark">
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="#">My Account <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Link</a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Sort Invoices
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item disabled">By All</a>
-          <a class="dropdown-item" href="#">By Client</a>
-          <a class="dropdown-item" href="{{ url_for('unpaid_view')}}">By Unpaid</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Create Invoice</a>
-          <a class="dropdown-item" href="#">Add Client</a>
-        </div>
-      </li>
-    </ul>
-  </div>
-</nav>
-{% endblock %}
-{% block col1 %}
-<div class="col-md-7 mx-auto">
-  <div class="card shadow-lg max-length text-center"
-    style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
-    <div class="card-header">
-      <h2>All Invoices</h2>
+  {% extends "admin/templates/dashboard_template.html" %}
+  {% block nav %}
+  <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">My Account <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Sort Invoices
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item disabled">By All</a>
+            <a class="dropdown-item" href="#">By Client</a>
+            <a class="dropdown-item" href="{{ url_for('unpaid_view')}}">By Unpaid</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Create Invoice</a>
+            <a class="dropdown-item" href="#">Add Client</a>
+          </div>
+        </li>
+      </ul>
     </div>
-    <div class="table-responsive">                               
-      <table class="table table-sm table-content table-striped table-bordered">
-        <thead>
-          <tr class="bg-primary text-light sticky-top">
-            <th>Invoice ID</th>
-            <th>Client</th>
-            <th>Date Sent</th>
-            <th>Amount</th>
-            <th colspan="2">Actions</th>
-          </tr>
-        </thead>
+  </nav>
+  {% endblock %}
+  {% block col1 %}
+  <div class="col-md-7 mx-auto">
+    <div class="card shadow-lg max-length text-center"
+      style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
+      <div class="card-header">
+        <h2>All Invoices</h2>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-sm table-content table-striped table-bordered">
+          <thead>
+            <tr class="bg-primary text-light sticky-top">
+              <th>Invoice ID</th>
+              <th>Client</th>
+              <th>Date Sent</th>
+              <th>Amount</th>
+              <th colspan="2">Actions</th>
+            </tr>
+          </thead>
 
           <tbody class="table">
             {% for invoice in invoice_list[0:-1] %}
             <tr>
-                <th><input type="hidden" class="inv_id" value="{{invoice['id']}}">{{invoice['id']}}</th>
-                <td><input type="hidden" class="client_id" value="{{invoice['client']}}">{{invoice['client']}}</td>
-                <td><input type="hidden" class="date_sent" value="{{invoice['date_sent']}}">{{invoice['date_sent']}}</td>
-                <td><input type="hidden" class="inv_amount" value="{{invoice['amount']}}">${{invoice['amount']}}</td>
-                <td>
-                  <a href="inv-prepop/{{invoice['id']}}" method="POST" role="button" id="update_submit" class="btn btn-warning">Edit <span
-                      class="fa-solid fa-file-pen"></span></button>
-                </td>
+              <th><input type="hidden" class="inv_id" value="{{invoice['id']}}">{{invoice['id']}}</th>
+              <td><input type="hidden" class="client_id" value="{{invoice['client']}}">{{invoice['client']}}</td>
+              <td><input type="hidden" class="date_sent" value="{{invoice['date_sent']}}">{{invoice['date_sent']}}</td>
+              <td><input type="hidden" class="inv_amount" value="{{invoice['amount']}}">${{invoice['amount']}}</td>
               <td>
-                <a href="delete/{{invoice['id']}}" method="POST" role="button" id="delete_by_inv_num"
-                  class="btn btn-danger">Delete <span class="fa-solid fa-circle-exclamation"></span></a>
+                <form action="inv-prepop/{{invoice['id']}}" method="POST">
+                  <button type="submit" id="update_submit" class="btn btn-warning">Edit <span
+                      class="fa-solid fa-file-pen"></span></button>
+                </form>
+              </td>
+              <td>
+                <form action="delete/{{invoice['id']}}" method="POST">
+                  <button type="submit" id="delete_by_inv_num" class="btn btn-danger">Delete <span
+                      class="fa-solid fa-circle-exclamation"></span></button>
+                </form>
               </td>
             </tr>
             {% endfor %}
           </tbody>
 
-      </table>
-    </div>
-    <div class="card-footer text-muted">
-      <p>Edit, delete, or mark as "paid".</p>
+        </table>
+      </div>
+      <div class="card-footer text-muted">
+        <p>Edit, delete, or mark as "paid".</p>
+      </div>
     </div>
   </div>
-</div>
 
   {% block update_modal %}
   {% endblock %}

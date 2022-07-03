@@ -11,6 +11,9 @@
     min-height: 150px;
 }
 
+.row-content-override {
+    border-bottom: none;
+}
 
 .card {
     margin-bottom: 2rem;
@@ -53,4 +56,9 @@
 
 .navbar {
     z-index: 2;
+}
+
+.big-logo {
+    font-size: 500px;
+    font-weight: 400;
 }
