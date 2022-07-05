@@ -1,51 +1,99 @@
-{% extends "admin/templates/dashboard_template.html" %}
-{% block col1 %}
-<div class="col-md-8 mx-auto">
-    <div class="card shadow-lg max-length text-center" style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
-      <div class="card-header">
-        <h2>Create Invoice</h2>
-      </div>
-        <form class="px-4 py-4 table-content text-left" action="/make-inv" method="POST">
-            <div class="form-group">
-              <label for="select_client">Client</label> 
-              <div>
-                <select id="select_client" name="select_client" aria-describedby="select_clientHelpBlock" required="required" class="custom-select">
-                  <option value="client_a">Client A</option>
-                  <option value="client_b">Client B</option>
-                  <option value="client_add">Add new client</option>
-                </select> 
-                <span id="select_clientHelpBlock" class="form-text text-muted">Choose client</span>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="invoice_amount">Amount</label> 
-              <input id="invoice_amount" name="invoice_amount" placeholder="Enter invoice amount" type="text" required="required" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="textarea">Services</label> 
-              <textarea id="textarea" name="textarea" cols="40" rows="3" class="form-control" aria-describedby="textareaHelpBlock"></textarea> 
-              <span id="textareaHelpBlock" class="form-text text-muted">Enter order charges</span>
-            </div>
-            <div class="form-group">
-              <label>Paid</label> 
-              <div>
-                <div class="custom-control custom-radio custom-control-inline">
-                  <input name="paid_boolean" id="paid_boolean_0" type="radio" class="custom-control-input" value="true" aria-describedby="paid_booleanHelpBlock"> 
-                  <label for="paid_boolean_0" class="custom-control-label">Yes</label>
-                </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                  <input name="paid_boolean" id="paid_boolean_1" type="radio" class="custom-control-input" value="false" aria-describedby="paid_booleanHelpBlock"> 
-                  <label for="paid_boolean_1" class="custom-control-label">No</label>
-                </div> 
-                <span id="paid_booleanHelpBlock" class="form-text text-muted">Has the invoice been paid?</span>
-              </div>
-            </div> 
-            <div class="form-group">
-              <button name="submit" type="submit" class="btn btn-primary">Create Invoice</button>
-            </div>
-        </form>
-    </div>
-</div>
-{% endblock %}
-</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> -->
+</head>
+<body>
 
+    {% extends "admin/templates/dashboard_template.html" %}
+    {% block head %}
+    {% endblock %}
+    {% block col1 %}
+    {% endblock %}
+    {% block col2 %}
+    {% endblock %}
+    {% block nav %}
+    {% endblock %}
+    {% block cards %}
+    {% endblock %}
+    {% block update_modal %}
+        <div class="container">
+            <div class="h-100 v-100 d-flex align-items-center justify-content-center">
+                <div class="big-logo">
+                    Bill It.             
+                </div>
+            </div>
+        </div>
+
+
+        <div id="make_modal" class="modal fade text-left" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content shadow-lg" style="border-radius: 1rem; border-width: 6px; border-color: #0004ff;">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Create an Invoice.</h3>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="container-fluid">
+                        <form class="px-4 py-4 table-content" method="POST">
+    
+                            <div class="form-group">
+                                <label for="select_client">Client</label>
+                                <div>
+                                    <select
+                                        aria-describedby="select_clientHelpBlock" required="required" id='client_id' class="custom-select">
+                                        {% for client in client_list[0:-1] %}
+                                        <option>{{client['company']}}</option>
+                                        {% endfor %}
+                                        <option>Add new client</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="textarea">Services</label>
+                                <textarea id="services" name="services" type="text" cols="40" rows="3" class="form-control"
+                                    aria-describedby="textareaHelpBlock" placeholder="What did you do for this client?"></textarea>
+                                <small id="textareaHelpBlock" class="form-text text-muted">Enter order charges</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Paid?</label>
+                                <div id="paid">
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input name="paid_boolean" id="paid_boolean_0" type="radio"
+                                            class="custom-control-input" value= "true"
+                                            aria-describedby="paid_booleanHelpBlock">
+                                        <label for="paid_boolean_0" class="custom-control-label">Yes</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input name="paid_boolean" id="paid_boolean_1" type="radio"
+                                            class="custom-control-input" value= "false"
+                                            aria-describedby="paid_booleanHelpBlock">
+                                        <label for="paid_boolean_1" class="custom-control-label">No</label>
+                                    </div>
+                                    <small id="paid_booleanHelpBlock" class="form-text text-muted">Has the invoice been
+                                        paid?</small>
+                                  
+                                </div>
+                            </div>
+                            <div id="paid-date-picker" class="form-group" style="display:none;">
+                              <label for="date-paid">Date Paid</label>
+                                <input id="date-paid" name="date-paid" cols="40" rows="1" class="form-control"
+                                    type="date" required="required"/>
+                            </div>
+                            <div class="form-group">
+                                <button id="update-cancel" type="button" class="btn btn-dark">Cancel</button>
+                                <button id="form-submit" name="submit" type="submit" class="btn btn-primary">Create Invoice</button>
+                            </div>
+    
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+</body>
+</html>

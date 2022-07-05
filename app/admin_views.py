@@ -101,17 +101,14 @@ def delete_inv_passthrough(inv_id: int):
             inv_to_delete.append(i.serialize())
         client_id = inv_to_delete[0]['client']
 
-        client_select = ClientModel.query.filter(ClientModel.id == int(client_id))
+        client_select = ClientModel.query.filter(
+            ClientModel.id == int(client_id))
         client_info = []
         for c in client_select:
             client_info.append(c.serialize())
         return render_template('admin/delete.html', client_info=client_info, inv_to_delete=inv_to_delete)
     else:
         print('No request sent.')
-
-
-
-
 
 
 @app.route('/delete-inv', methods=['GET', 'POST'])
@@ -121,21 +118,20 @@ def delete_invoice():
         int_req = int(req['inv_id'])
         pp.pprint(req)
         pp.pprint(int(req['inv_id']))
-        return  jsonify({'status': 'looking good'})
-        '''try:
-            db.session.delete(req[int_req)
+
+        try:
+            db.session.delete(req[int_req])
             db.session.commit()
             flash('Invoice deleted successfully.')
-            return redirect(url_for('unpaid_view'))
+            return jsonify({'status': 'invoice deleted'})
+            # return redirect(url_for('unpaid_view'))
         except:
             flash('Failed to delete invoice!')
-            return redirect(url_for('unpaid_view'))'''
+            return jsonify({'status': 'error: invoice not deleted.'})
+            # return redirect(url_for('unpaid_view'))
     else:
         print('NOT A POST :(')
         return 'REQUEST FAILED'
-
-
-
 
 
 @app.route('/update-inv', methods=['GET', 'POST'])
@@ -144,7 +140,7 @@ def update_invoice():
         req = request.get_json()
         pp.pprint(req)
         pp.pprint(req['amount'])
-        return  jsonify({'status': 'looking good'})
+        return jsonify({'status': 'looking good'})
     else:
         print('NOT A POST :(')
         return 'REQUEST FAILED'
@@ -156,11 +152,13 @@ def update_invoice():
         print(client_id, inv_id, amount, services, paid)'''
 
 
-
 @app.route('/make-inv', methods=['GET', 'POST'])
 def make_inv():
-    return render_template('admin/make-inv.html', paid_inv=paid_inv, unpaid_inv=unpaid_inv, total_inv=total_inv,
-                           total_clients=total_clients, billed_total=billed_total, collected_total=collected_total)
+    client_select = ClientModel.query.all()
+    client_list = []
+    for c in client_select:
+        client_list.append(c.serialize())
+    return render_template('admin/make-inv.html', client_list=client_list)
 
 
 @app.route('/add-client', methods=['GET', 'POST'])
