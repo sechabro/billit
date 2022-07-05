@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+
+    {% extends "admin/templates/dashboard_template.html" %}
+    {% block head %}
+    {% endblock %}
+    {% block col1 %}
+    {% endblock %}
+    {% block col2 %}
+    {% endblock %}
+    {% block nav %}
+    {% endblock %}
+    {% block cards %}
+    {% endblock %}
+    {% block update_modal %}
+        <div class="container">
+            <div class="h-100 v-100 d-flex align-items-center justify-content-center">
+                <div class="big-logo">
+                    Bill It.             
+                </div>
+            </div>
+        </div>
+
+
+        <div id="delete_modal" class="modal fade text-left" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content shadow-lg" style="border-radius: 1rem; border-width: 6px; border-color: #0004ff;">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Update this invoice?</h3>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="container-fluid">
+                        <form id="delete-form" class="px-4 py-4 table-content" method="POST">
+                            <div class="form-group">
+                                <label for="invoice_amount">Client</label>
+    
+                                <input id="amount" cols="40" rows="1" value="{{client_info[0]['company']}}" readonly class="form-control-plaintext"
+                                    type="text" required="required"/>
+    
+                            </div>
+
+                            <div class="row mx-auto">
+                                <div class="form-group">
+                                    {% for inv in inv_to_delete %}
+                                    <label for="invoice_number">Invoice ID</label>
+                                    <input id="inv_id" value="{{inv['id']}}" type="text" readonly class="form-control-plaintext" required="required"
+                                        class="form-control"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="invoice_amount">Amount</label>
+        
+                                    <input id="amount" cols="40" rows="1" value="{{inv['amount']}}" readonly class="form-control-plaintext"
+                                        type="text" required="required"/>
+        
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="textarea">Services</label>
+                                <textarea id="services" name="services" type="text" cols="40" rows="3" readonly class="form-control-plaintext"
+                                    aria-describedby="textareaHelpBlock">{{inv['services']}}</textarea>
+                                <small id="textareaHelpBlock" class="form-text text-muted">Enter order charges</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="invoice_amount">Paid</label>
+                                {% if inv['paid'] == false %}
+                                <input id="no_payment" cols="40" rows="1" value="You haven't received payment for this invoice yet." readonly class="form-control-plaintext"
+                                    type="text" required="required"/>
+                                {% else %}
+                                <input id="yes_payment" cols="40" rows="1" value="Invoice paid on {{inv['date_paid']}}" readonly class="form-control-plaintext"
+                                type="text" required="required"/>
+                                {% endif %}
+                            </div>
+                                    {% endfor %}
+
+    
+                            <div class="form-group">
+                                <button id="delete-cancel" type="button" class="btn btn-dark">Cancel</button>
+                                <button id="delete-submit" name="submit" type="submit" class="btn btn-danger">Delete Invoice</button>
+                            </div>
+    
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+</body>
+</html>

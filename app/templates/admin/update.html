@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
 
@@ -37,65 +38,68 @@
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="container-fluid">
-                        <form class="px-4 py-4 table-content" action="/make-inv" method="POST">
+                        <form class="px-4 py-4 table-content" method="POST">
     
                             <div class="form-group">
                                 <label for="select_client">Client</label>
                                 <div>
-                                    <select id="select_client" name="select_client"
-                                        aria-describedby="select_clientHelpBlock" required="required" class="custom-select">
+                                    <select
+                                        aria-describedby="select_clientHelpBlock" required="required" id='client_id' class="custom-select">
                                         {% set default_client = client_id %}
-                                        <option value="{{ client_list[client_id - 1]['company'] }}">{{client_list[client_id - 1]['company']}}</option>
+                                        <option>{{client_list[client_id - 1]['company']}}</option>
                                         {% for client in client_list[0:-1] %}
-                                        <option value="{{ client['company'] }}">{{client['company']}}</option>
+                                        <option>{{client['company']}}</option>
                                         {% endfor %}
-                                        <option value="client_add">Add new client</option>
+                                        <option>Add new client</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                {% for inv in inv_to_update %}
-                                <label for="invoice_number">Invoice ID - this value can't be changed.</label>
-                                <p id="invoice_number" name="invoice_number" type="text" required="required"
-                                    class="form-control">{{inv['id']}}</p>
+                            <div class="row mx-auto">
+                                <div class="form-group">
+                                    {% for inv in inv_to_update %}
+                                    <label for="invoice_number">Invoice ID</label>
+                                    <input id="inv_id" value="{{inv['id']}}" type="text" readonly class="form-control-plaintext" required="required"
+                                        class="form-control"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="invoice_amount">Amount</label>
+        
+                                    <input id="amount" cols="40" rows="1" value="{{inv['amount']}}" class="form-control"
+                                        type="text" required="required"/>
+        
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="invoice_amount">Amount</label>
-    
-                                <textarea id="invoice_amount" name="invoice_amount" cols="40" rows="1" class="form-control"
-                                    type="text" required="required">${{inv['amount']}}</textarea>
-    
-                            </div>
+
                             <div class="form-group">
                                 <label for="textarea">Services</label>
-                                <textarea id="textarea" name="textarea" cols="40" rows="3" class="form-control"
+                                <textarea id="services" name="services" type="text" cols="40" rows="3" class="form-control"
                                     aria-describedby="textareaHelpBlock">{{inv['services']}}</textarea>
-                                <span id="textareaHelpBlock" class="form-text text-muted">Enter order charges</span>
+                                <small id="textareaHelpBlock" class="form-text text-muted">Enter order charges</small>
                             </div>
                             <div class="form-group">
-                                <label>Paid</label>
-                                <div>
+                                <label>Paid?</label>
+                                <div id="paid">
                                     <div class="custom-control custom-radio custom-control-inline">
                                         <input name="paid_boolean" id="paid_boolean_0" type="radio"
-                                            class="custom-control-input" value="true"
+                                            class="custom-control-input" value= "true"
                                             aria-describedby="paid_booleanHelpBlock">
                                         <label for="paid_boolean_0" class="custom-control-label">Yes</label>
                                     </div>
                                     <div class="custom-control custom-radio custom-control-inline">
                                         <input name="paid_boolean" id="paid_boolean_1" type="radio"
-                                            class="custom-control-input" value="false"
+                                            class="custom-control-input" value= "false"
                                             aria-describedby="paid_booleanHelpBlock">
                                         <label for="paid_boolean_1" class="custom-control-label">No</label>
                                     </div>
-                                    <span id="paid_booleanHelpBlock" class="form-text text-muted">Has the invoice been
-                                        paid?</span>
+                                    <small id="paid_booleanHelpBlock" class="form-text text-muted">Has the invoice been
+                                        paid?</small>
                                     {% endfor %}
                                 </div>
                             </div>
     
                             <div class="form-group">
                                 <button id="update-cancel" type="button" class="btn btn-dark">Cancel</button>
-                                <button name="submit" type="submit" class="btn btn-primary">Update Invoice</button>
+                                <button id="form-submit" name="submit" type="submit" class="btn btn-primary">Update Invoice</button>
                             </div>
     
                         </form>

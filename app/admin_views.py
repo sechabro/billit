@@ -1,3 +1,4 @@
+from multiprocessing.connection import Client
 from flask_sqlalchemy import SQLAlchemy
 from app import app
 from flask import Blueprint, flash, jsonify, make_response, redirect, render_template, send_file, Flask, send_from_directory, Response, url_for, request
@@ -10,8 +11,9 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import io
 import json
+import pprint
 
-#bp = Blueprint('invoices', __name__, url_prefix='/dashboard')
+pp = pprint.PrettyPrinter(indent=2, width=160, compact=False)
 
 # Connect
 engine = create_engine('postgresql://postgres@localhost:5432/billit')
@@ -73,7 +75,7 @@ def inv_passthrough(inv_id: int):
         inv_to_update = []
         for i in inv:
             inv_to_update.append(i.serialize())
-        invoice = inv_to_update[0]['id']
+        #invoice = inv_to_update[0]['id']
         client_id = inv_to_update[0]['client']
 
         client_select = ClientModel.query.all()
@@ -90,22 +92,69 @@ def inv_passthrough(inv_id: int):
                                billed_total=billed_total, collected_total=collected_total)
 
 
-@app.route('/dashboard/delete/<int:inv_id>', methods=['GET', 'POST'])
-def delete_invoice(inv_id: int):
-    inv = InvoiceModel.query.get_or_404(inv_id)
+@app.route('/dashboard/del-prepop/<int:inv_id>', methods=['GET', 'POST'])
+def delete_inv_passthrough(inv_id: int):
+    inv = InvoiceModel.query.filter(InvoiceModel.id == inv_id)
     if request.method == 'POST':
-        try:
-            db.session.delete(inv)
+        inv_to_delete = []
+        for i in inv:
+            inv_to_delete.append(i.serialize())
+        client_id = inv_to_delete[0]['client']
+
+        client_select = ClientModel.query.filter(ClientModel.id == int(client_id))
+        client_info = []
+        for c in client_select:
+            client_info.append(c.serialize())
+        return render_template('admin/delete.html', client_info=client_info, inv_to_delete=inv_to_delete)
+    else:
+        print('No request sent.')
+
+
+
+
+
+
+@app.route('/delete-inv', methods=['GET', 'POST'])
+def delete_invoice():
+    if request.method == 'POST':
+        req = request.get_json()
+        int_req = int(req['inv_id'])
+        pp.pprint(req)
+        pp.pprint(int(req['inv_id']))
+        return  jsonify({'status': 'looking good'})
+        '''try:
+            db.session.delete(req[int_req)
             db.session.commit()
             flash('Invoice deleted successfully.')
             return redirect(url_for('unpaid_view'))
         except:
             flash('Failed to delete invoice!')
-            return redirect(url_for('unpaid_view'))
-    elif request.method == 'GET':
-        print('You are sending a GET request...')
+            return redirect(url_for('unpaid_view'))'''
     else:
-        print('No request sent.')
+        print('NOT A POST :(')
+        return 'REQUEST FAILED'
+
+
+
+
+
+@app.route('/update-inv', methods=['GET', 'POST'])
+def update_invoice():
+    if request.method == 'POST':
+        req = request.get_json()
+        pp.pprint(req)
+        pp.pprint(req['amount'])
+        return  jsonify({'status': 'looking good'})
+    else:
+        print('NOT A POST :(')
+        return 'REQUEST FAILED'
+        '''client_id = request.form['client_id']
+        inv_id = request.form['inv_id']
+        amount = request.form['amount']
+        services = request.form['services']
+        paid = request.form['paid']
+        print(client_id, inv_id, amount, services, paid)'''
+
 
 
 @app.route('/make-inv', methods=['GET', 'POST'])

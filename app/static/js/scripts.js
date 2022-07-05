@@ -4,44 +4,89 @@ $(document).ready(function () {
     $("#update_modal").modal('show');
 });
 
+$(document).ready(function () {
+    $("#delete_modal").modal('show');
+});
+
+
 $("#update-cancel").click(function () {
+    { window.history.back() };
+});
+
+$("#delete-cancel").click(function () {
     { window.history.back() };
 });
 
 $(".close").click(function () {
     { window.history.back() };
 });
-/*
-
-
-$(".btn.btn-warning").click(function () {
-    $("#update_modal").modal('toggle');
-});
 
 
 $(document).ready(function () {
-    $(".btn.btn-warning").click(function () {
+    $("#delete-submit").click(function () {
         $('form').submit()
-    })
-});
+            $('form').submit(function (event) {
+                data = JSON.stringify({
+                    'inv_id': $('#inv_id').val(),
+                });
+                console.log(data)
+                $.ajax('/delete-inv', {
+                    type: 'POST',
+                    cache: "no-cache",
+                    processData: false,
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: data,
+                    success: function(r) {
+                        console.log('Success');
+                        console.log(r);
+                    },
+                    error: function(r) {
+                        console.log('Error');
+                        console.log(r);
+                    }
+                })
+                event.preventDefault();
+            });
+        });
+    });
 
 
 
-$('form').submit(function (event) {
-    let url = "{{ url_for('inv_passthrough') }}";
-    $.ajax({
-        url: url,
-        type: 'POST',
-        contentType: 'application/json;charset=UTF-8',
-        data: JSON.stringify({
-            'inv_id': $('.inv_id').val(),
-            'client_id': $('.client_id').val(),
-        }),
-        error: function (error) {
-            console.log(error);
-        }
-    })
-    event.preventDefault();
-});*/
-
+$(document).ready(function () {
+    $("#form-submit").click(function () {
+        $('form').submit()
+            $('form').submit(function (event) {
+                const paidButton = $("input[type='radio']:checked").val(); //false;
+                let paidValue = false;
+                if (paidButton === "true") {paidValue=true;};
+                //if ( $('#paid_boolean_0').checked == True) {paidRB=true;};
+                data = JSON.stringify({
+                    'client_id': $('#client_id').val(),
+                    'inv_id': $('#inv_id').val(),
+                    'amount': $('#amount').val(),
+                    'services': $('#services').val(),
+                    'paid': paidValue
+                });
+                console.log(data)
+                $.ajax('/update-inv', {
+                    type: 'POST',
+                    cache: "no-cache",
+                    processData: false,
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: data,
+                    success: function(r) {
+                        console.log('Success');
+                        console.log(r);
+                    },
+                    error: function(r) {
+                        console.log('Error');
+                        console.log(r);
+                    }
+                })
+                event.preventDefault();
+            });
+        });
+    });
 
