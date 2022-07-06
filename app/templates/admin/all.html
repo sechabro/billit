@@ -33,10 +33,10 @@
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <a class="dropdown-item disabled">By All</a>
-            <a class="dropdown-item" href="#">By Client</a>
+            <a class="dropdown-item" href="{{ url_for('client_view')}}">By Client</a>
             <a class="dropdown-item" href="{{ url_for('unpaid_view')}}">By Unpaid</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Create Invoice</a>
+            <a class="dropdown-item" href="{{ url_for('inv_form')}}">Create Invoice</a>
             <a class="dropdown-item" href="#">Add Client</a>
           </div>
         </li>

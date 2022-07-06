@@ -96,10 +96,14 @@
                                     {% endfor %}
                                 </div>
                             </div>
-    
+                            <div id="paid-date-picker" class="form-group" style="display:none;">
+                                <label for="date-paid">Date Paid</label>
+                                  <input id="date-paid" name="date-paid" cols="40" rows="1" class="form-control"
+                                      type="date"/>
+                              </div>
                             <div class="form-group">
-                                <button id="update-cancel" type="button" class="btn btn-dark">Cancel</button>
-                                <button id="form-submit" name="submit" type="submit" class="btn btn-primary">Update Invoice</button>
+                                <button id="cancel" type="button" class="btn btn-dark">Cancel</button>
+                                <button id="update-submit" name="submit" type="submit" class="btn btn-primary">Update Invoice</button>
                             </div>
     
                         </form>

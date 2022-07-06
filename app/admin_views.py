@@ -67,6 +67,19 @@ def unpaid_view():
     return render_template('admin/unpaid.html', client_list=client_list, unpaid_list=unpaid_list, paid_inv=paid_inv, unpaid_inv=unpaid_inv, total_inv=total_inv,
                            total_clients=total_clients, billed_total=billed_total, collected_total=collected_total)
 
+@app.route('/dashboard/by-client', methods=['GET', 'POST'])
+def client_view():
+    clients = InvoiceModel.query.order_by(InvoiceModel.client)
+    client_list = []
+    for c in clients:
+        client_list.append(c.serialize())
+    #client_select = ClientModel.query.all()
+    #client_list = []
+    #for c in client_select:
+    #    client_list.append(c.serialize())
+    return render_template('admin/by-client.html', client_list=client_list, paid_inv=paid_inv, unpaid_inv=unpaid_inv, total_inv=total_inv,
+                           total_clients=total_clients, billed_total=billed_total, collected_total=collected_total)
+
 
 @app.route('/dashboard/inv-prepop/<int:inv_id>', methods=['GET', 'POST'])
 def inv_passthrough(inv_id: int):
@@ -116,11 +129,12 @@ def delete_invoice():
     if request.method == 'POST':
         req = request.get_json()
         int_req = int(req['inv_id'])
+        inv = InvoiceModel.query.filter(InvoiceModel.id == int_req)
         pp.pprint(req)
         pp.pprint(int(req['inv_id']))
 
         try:
-            db.session.delete(req[int_req])
+            db.session.delete(inv)
             db.session.commit()
             flash('Invoice deleted successfully.')
             return jsonify({'status': 'invoice deleted'})
@@ -152,13 +166,30 @@ def update_invoice():
         print(client_id, inv_id, amount, services, paid)'''
 
 
-@app.route('/make-inv', methods=['GET', 'POST'])
-def make_inv():
+
+
+
+@app.route('/inv-form-return', methods=['GET', 'POST'])
+def inv_form():
     client_select = ClientModel.query.all()
     client_list = []
     for c in client_select:
         client_list.append(c.serialize())
     return render_template('admin/make-inv.html', client_list=client_list)
+
+@app.route('/create-inv', methods=['GET', 'POST'])
+def create_invoice():
+    if request.method == 'POST':
+        req = request.get_json()
+        pp.pprint(req)
+        pp.pprint(req['amount'])
+        return jsonify({'status': 'looking good'})
+    else:
+        print('NOT A POST :(')
+        return 'REQUEST FAILED'
+
+
+
 
 
 @app.route('/add-client', methods=['GET', 'POST'])

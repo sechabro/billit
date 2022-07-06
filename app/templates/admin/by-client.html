@@ -31,8 +31,8 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="{{ url_for('invoice_index') }}">By All</a>
-          <a class="dropdown-item" href="{{ url_for('client_view')}}">By Client</a>
-          <a class="dropdown-item disabled">By Unpaid</a>
+          <a class="dropdown-item disabled">By Client</a>
+          <a class="dropdown-item" href="{{ url_for('unpaid_view')}}">By Unpaid</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="{{ url_for('inv_form')}}">Create Invoice</a>
           <a class="dropdown-item" href="#">Add Client</a>
@@ -49,7 +49,7 @@
     <div class="card shadow-lg max-length text-center"
       style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
       <div class="card-header">
-        <h2>Unpaid Invoices</h2>
+        <h2>Invoices by Client</h2>
       </div>
       <div class="table-responsive">                               
         <table class="table table-sm table-content table-striped table-bordered">
@@ -64,7 +64,7 @@
           </thead>
         
             <tbody class="table">
-              {% for invoice in unpaid_list[0:-1] %}
+              {% for invoice in client_list[0:-1] %}
               <tr>
                   <th><input type="hidden" class="inv_id" value="{{invoice['id']}}">{{invoice['id']}}</th>
                   <td><input type="hidden" class="client_id" value="{{invoice['client']}}">{{invoice['client']}}</td>
