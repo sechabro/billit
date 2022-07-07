@@ -10,6 +10,13 @@
 {% block cards %}
 {% endblock %}
 {% block modal %}
+<div class="container">
+  <div class="h-100 v-100 d-flex align-items-center justify-content-center">
+      <div class="big-logo">
+          Bill It.             
+      </div>
+  </div>
+</div>
 <div id="update_modal" class="modal fade text-left" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content shadow-lg" style="border-radius: 1rem; border-width: 6px; border-color: #0004ff;">
@@ -56,7 +63,7 @@
           </div> 
           <div class="form-group">
             <button id="cancel" type="button" class="btn btn-dark">Cancel</button>
-            <button id="add-client-submit" name="submit" type="submit" class="btn btn-primary">Update Invoice</button>
+            <button id="add-client-submit" name="submit" type="submit" class="btn btn-primary">Add Client</button>
           </div>
         </form>
       </div>

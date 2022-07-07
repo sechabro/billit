@@ -44,7 +44,7 @@
                                 <label for="select_client">Client</label>
                                 <div>
                                     <select
-                                        aria-describedby="select_clientHelpBlock" required="required" id='client_id' class="custom-select">
+                                        aria-describedby="select_clientHelpBlock" required="required" id='client_company' class="custom-select">
                                         {% set default_client = client_id %}
                                         <option>{{client_list[client_id - 1]['company']}}</option>
                                         {% for client in client_list[0:-1] %}
@@ -65,7 +65,7 @@
                                     <label for="invoice_amount">Amount</label>
         
                                     <input id="amount" cols="40" rows="1" value="{{inv['amount']}}" class="form-control"
-                                        type="text" required="required"/>
+                                        type="number" required="required"/>
         
                                 </div>
                             </div>
@@ -76,31 +76,57 @@
                                     aria-describedby="textareaHelpBlock">{{inv['services']}}</textarea>
                                 <small id="textareaHelpBlock" class="form-text text-muted">Enter order charges</small>
                             </div>
+                            {% endfor %}
                             <div class="form-group">
-                                <label>Paid?</label>
-                                <div id="paid">
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input name="paid_boolean" id="paid_boolean_0" type="radio"
-                                            class="custom-control-input" value= "true"
-                                            aria-describedby="paid_booleanHelpBlock">
-                                        <label for="paid_boolean_0" class="custom-control-label">Yes</label>
+                                <div class="form-group">
+                                    <label>Mark as "Sent"?</label>
+                                    <div id="sent">
+                                        <div class="custom-control custom-radio custom-control-inline">
+                                            <input name="sent_boolean" id="sent_boolean_0" type="radio"
+                                                class="custom-control-input" value= "true"
+                                                aria-describedby="sent_booleanHelpBlock">
+                                            <label for="sent_boolean_0" class="custom-control-label">Yes</label>
+                                        </div>
+                                        <div class="custom-control custom-radio custom-control-inline">
+                                            <input name="sent_boolean" id="sent_boolean_1" type="radio"
+                                                class="custom-control-input" value= "false"
+                                                aria-describedby="sent_booleanHelpBlock">
+                                            <label for="sent_boolean_1" class="custom-control-label">No</label>
+                                        </div>
+                                        <small id="sent_booleanHelpBlock" class="form-text text-muted">Has the invoice been sent?</small>
+    
                                     </div>
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input name="paid_boolean" id="paid_boolean_1" type="radio"
-                                            class="custom-control-input" value= "false"
-                                            aria-describedby="paid_booleanHelpBlock">
-                                        <label for="paid_boolean_1" class="custom-control-label">No</label>
-                                    </div>
-                                    <small id="paid_booleanHelpBlock" class="form-text text-muted">Has the invoice been
-                                        paid?</small>
-                                    {% endfor %}
                                 </div>
-                            </div>
-                            <div id="paid-date-picker" class="form-group" style="display:none;">
-                                <label for="date-paid">Date Paid</label>
-                                  <input id="date-paid" name="date-paid" cols="40" rows="1" class="form-control"
-                                      type="date"/>
-                              </div>
+                                <div id="sent-date-picker" class="form-group" style="display:none;">
+                                    <label for="date-sent">Date Sent</label>
+                                      <input id="date-sent" name="date-sent" cols="40" rows="1" class="form-control"
+                                          type="date"/>
+                                </div>
+                                <div id="paid" class="form-group" style="display:none;">
+                                    <label>Paid?</label>
+                                    <div>
+                                        <div class="custom-control custom-radio custom-control-inline">
+                                            <input name="paid_boolean" id="paid_boolean_0" type="radio"
+                                                class="custom-control-input" value= "true"
+                                                aria-describedby="paid_booleanHelpBlock">
+                                            <label for="paid_boolean_0" class="custom-control-label">Yes</label>
+                                        </div>
+                                        <div class="custom-control custom-radio custom-control-inline">
+                                            <input name="paid_boolean" id="paid_boolean_1" type="radio"
+                                                class="custom-control-input" value= "false"
+                                                aria-describedby="paid_booleanHelpBlock">
+                                            <label for="paid_boolean_1" class="custom-control-label">No</label>
+                                        </div>
+                                        <small id="paid_booleanHelpBlock" class="form-text text-muted">Has the invoice been
+                                            paid?</small>
+
+                                    </div>
+                                </div>
+                                <div id="paid-date-picker" class="form-group" style="display:none;">
+                                    <label for="date-paid">Date Paid</label>
+                                      <input id="date-paid" name="date-paid" cols="40" rows="1" class="form-control"
+                                          type="date"/>
+                                </div>
                             <div class="form-group">
                                 <button id="cancel" type="button" class="btn btn-dark">Cancel</button>
                                 <button id="update-submit" name="submit" type="submit" class="btn btn-primary">Update Invoice</button>

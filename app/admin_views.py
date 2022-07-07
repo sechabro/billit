@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from app import app
 from flask import Blueprint, flash, jsonify, make_response, redirect, render_template, send_file, Flask, send_from_directory, Response, url_for, request
 from app.models import InvoiceModel, ClientModel, db
-from sqlalchemy import Boolean, create_engine, insert, select, func, distinct, true, values, delete
+from sqlalchemy import Boolean, create_engine, insert, select, func, distinct, true, values, delete, update
 from sqlalchemy.orm import sessionmaker, declarative_base
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import savefig
@@ -20,33 +20,48 @@ engine = create_engine('postgresql://postgres@localhost:5432/billit')
 Session = sessionmaker(bind=engine)
 session = Session()
 
-# Dashboard data
-paid_inv = session.query(InvoiceModel).filter(
-    InvoiceModel.paid == True).count()
-unpaid_inv = session.query(InvoiceModel).filter(
-    InvoiceModel.paid == False).count()
+# DASHBOARD QUERIES
+'''class Queries:
+    def __init__(self, paid_inv, unpaid_inv, total_clients, total_inv, billed_total_query, collected_total_query, billed_total, collected_total):
+        self.paid_inv = session.query(InvoiceModel).filter(InvoiceModel.paid == True).count()
+        self.unpaid_inv = session.query(InvoiceModel).filter(InvoiceModel.paid == False).count()
+        self.total_clients = session.query(ClientModel).count()
+        self.total_inv = session.query(InvoiceModel).count()
+        self.billed_total_query = session.query(func.sum(InvoiceModel.amount))
+        self.collected_total_query = session.query(func.sum(InvoiceModel.amount)).filter(InvoiceModel.paid == True)
+        self.billed_total = round(self.billed_total_query.scalar(), 2)
+        self.collected_total = round(self.collected_total_query.scalar(), 2)'''
+paid_inv = session.query(InvoiceModel).filter(InvoiceModel.paid == True).count()
+unpaid_inv = session.query(InvoiceModel).filter(InvoiceModel.paid == False).count()
 total_clients = session.query(ClientModel).count()
 total_inv = session.query(InvoiceModel).count()
 billed_total_query = session.query(func.sum(InvoiceModel.amount))
+collected_total_query = session.query(func.sum(InvoiceModel.amount)).filter(InvoiceModel.paid == True)
 billed_total = round(billed_total_query.scalar(), 2)
-collected_total_query = session.query(
-    func.sum(InvoiceModel.amount)).filter(InvoiceModel.paid == True)
 collected_total = round(collected_total_query.scalar(), 2)
 
+        
 
+# TEMPLATE BASE ----------------
 @app.route('/dashboard')
 def dashboard_index():
+
     return render_template('admin/templates/dashboard_template.html', paid_inv=paid_inv, unpaid_inv=unpaid_inv, total_inv=total_inv,
                            total_clients=total_clients, billed_total=billed_total, collected_total=collected_total)
+# ------------------------------
 
 
+
+
+
+# DASHBOARD SORT VIEWS -----------------------------
 @app.route('/dashboard/all', methods=['GET', 'POST'])
 def invoice_index():
     invoices = InvoiceModel.query.all()
+    client_select = ClientModel.query.all()
     invoice_list = []
     for i in invoices:
         invoice_list.append(i.serialize())
-    client_select = ClientModel.query.all()
     client_list = []
     for c in client_select:
         client_list.append(c.serialize())
@@ -67,18 +82,44 @@ def unpaid_view():
     return render_template('admin/unpaid.html', client_list=client_list, unpaid_list=unpaid_list, paid_inv=paid_inv, unpaid_inv=unpaid_inv, total_inv=total_inv,
                            total_clients=total_clients, billed_total=billed_total, collected_total=collected_total)
 
+
 @app.route('/dashboard/by-client', methods=['GET', 'POST'])
 def client_view():
     clients = InvoiceModel.query.order_by(InvoiceModel.client)
     client_list = []
     for c in clients:
         client_list.append(c.serialize())
-    #client_select = ClientModel.query.all()
-    #client_list = []
-    #for c in client_select:
-    #    client_list.append(c.serialize())
     return render_template('admin/by-client.html', client_list=client_list, paid_inv=paid_inv, unpaid_inv=unpaid_inv, total_inv=total_inv,
                            total_clients=total_clients, billed_total=billed_total, collected_total=collected_total)
+# ---------------------------------------------
+
+
+
+
+
+# INVOICE ADDING, EDITING, AND DELETING ---------
+@app.route('/inv-form-return', methods=['GET', 'POST'])
+def inv_form():
+    client_select = ClientModel.query.all()
+    client_list = []
+    for c in client_select:
+        client_list.append(c.serialize())
+    return render_template('admin/make-inv.html', client_list=client_list)
+
+
+@app.route('/create-inv', methods=['GET', 'POST'])
+def create_invoice():
+    if request.method == 'POST':
+        req = request.get_json()
+        print('Creating invoice file for:', req)
+        stmt = insert(InvoiceModel).values(client=req['client_id'], services=req['services'], amount=req['amount'],
+                                          paid=req['paid'], date_paid=req['date_paid'], date_sent=req['date_sent'])
+        with engine.connect() as conn:
+            conn.execute(stmt)
+        return jsonify({'Status': 'Client added!'})
+    else:
+        print('NOT A POST :(')
+        return 'REQUEST FAILED'
 
 
 @app.route('/dashboard/inv-prepop/<int:inv_id>', methods=['GET', 'POST'])
@@ -105,6 +146,29 @@ def inv_passthrough(inv_id: int):
                                billed_total=billed_total, collected_total=collected_total)
 
 
+@app.route('/update-inv', methods=['GET', 'POST'])
+def update_invoice():
+    if request.method == 'POST':
+        req = request.get_json()
+        pp.pprint(req)
+        company = req['company']
+        #inv_to_update = InvoiceModel.query.filter(InvoiceModel.id == req['inv_id'])
+        client_company = ClientModel.query.filter(ClientModel.company == company)
+        client_info = []
+        for c in client_company:
+            client_info.append(c.serialize())
+        print(client_info[0]['id'])
+        stmt = update(InvoiceModel).where(InvoiceModel.id == req['inv_id']).values(client=client_info[0]['id'], amount=req['amount'], services=req['services'],
+                                          date_sent=req['date_sent'], date_paid=req['date_paid'], paid=req['paid'])
+        print(stmt)
+        with engine.connect() as conn:
+            conn.execute(stmt)
+        return jsonify({'Status': 'Invoice Updated'})
+    else:
+        print('NOT A POST :(')
+        return 'REQUEST FAILED'
+
+
 @app.route('/dashboard/del-prepop/<int:inv_id>', methods=['GET', 'POST'])
 def delete_inv_passthrough(inv_id: int):
     inv = InvoiceModel.query.filter(InvoiceModel.id == inv_id)
@@ -128,14 +192,12 @@ def delete_inv_passthrough(inv_id: int):
 def delete_invoice():
     if request.method == 'POST':
         req = request.get_json()
-        int_req = int(req['inv_id'])
-        inv = InvoiceModel.query.filter(InvoiceModel.id == int_req)
         pp.pprint(req)
-        pp.pprint(int(req['inv_id']))
-
+        int_req = int(req['inv_id'])
         try:
-            db.session.delete(inv)
-            db.session.commit()
+            stmt = delete(InvoiceModel).where(InvoiceModel.id == int_req)
+            with engine.connect() as conn:
+                conn.execute(stmt)
             flash('Invoice deleted successfully.')
             return jsonify({'status': 'invoice deleted'})
             # return redirect(url_for('unpaid_view'))
@@ -143,74 +205,41 @@ def delete_invoice():
             flash('Failed to delete invoice!')
             return jsonify({'status': 'error: invoice not deleted.'})
             # return redirect(url_for('unpaid_view'))
+
     else:
         print('NOT A POST :(')
         return 'REQUEST FAILED'
-
-
-@app.route('/update-inv', methods=['GET', 'POST'])
-def update_invoice():
-    if request.method == 'POST':
-        req = request.get_json()
-        pp.pprint(req)
-        pp.pprint(req['amount'])
-        return jsonify({'status': 'looking good'})
-    else:
-        print('NOT A POST :(')
-        return 'REQUEST FAILED'
-        '''client_id = request.form['client_id']
-        inv_id = request.form['inv_id']
-        amount = request.form['amount']
-        services = request.form['services']
-        paid = request.form['paid']
-        print(client_id, inv_id, amount, services, paid)'''
+# ---------------------------------------------
 
 
 
 
 
-@app.route('/inv-form-return', methods=['GET', 'POST'])
-def inv_form():
-    client_select = ClientModel.query.all()
-    client_list = []
-    for c in client_select:
-        client_list.append(c.serialize())
-    return render_template('admin/make-inv.html', client_list=client_list)
-
-@app.route('/create-inv', methods=['GET', 'POST'])
-def create_invoice():
-    if request.method == 'POST':
-        req = request.get_json()
-        pp.pprint(req)
-        pp.pprint(req['amount'])
-        return jsonify({'status': 'looking good'})
-    else:
-        print('NOT A POST :(')
-        return 'REQUEST FAILED'
-
-
-
-
-
+# CLIENT ADDING, EDITING, AND DELETING ---------
 @app.route('/client-form-return', methods=['GET', 'POST'])
 def client_form():
     states = ['AK', 'AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'GA',
-           'HI', 'IA', 'ID', 'IL', 'IN', 'KS', 'KY', 'LA', 'MA', 'MD', 'ME',
-           'MI', 'MN', 'MO', 'MS', 'MT', 'NC', 'ND', 'NE', 'NH', 'NJ', 'NM',
-           'NV', 'NY', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX',
-           'UT', 'VA', 'VT', 'WA', 'WI', 'WV', 'WY']
+              'HI', 'IA', 'ID', 'IL', 'IN', 'KS', 'KY', 'LA', 'MA', 'MD', 'ME',
+              'MI', 'MN', 'MO', 'MS', 'MT', 'NC', 'ND', 'NE', 'NH', 'NJ', 'NM',
+              'NV', 'NY', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX',
+              'UT', 'VA', 'VT', 'WA', 'WI', 'WV', 'WY']
     return render_template('admin/add-client.html', states=states)
+
 
 @app.route('/add-client', methods=['GET', 'POST'])
 def add_client():
     if request.method == 'POST':
         req = request.get_json()
-        pp.pprint(req)
-        return jsonify({'status': 'looking good'})
+        print('Creating client file for:', req)
+        stmt = insert(ClientModel).values(company=req['company'], contact=req['contact'], email=req['email'],
+                                          address=req['address'], city=req['city'], state=req['state'], zipcode=req['zipcode'])
+        with engine.connect() as conn:
+            conn.execute(stmt)
+        return jsonify({'Status': 'Client added!'})
     else:
         print('NOT A POST :(')
         return 'REQUEST FAILED'
-
+# -------------------------------------
 
 
 @app.route('/plot.png')

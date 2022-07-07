@@ -14,7 +14,7 @@ engine = create_engine('postgresql://postgres@localhost:5432/billit')
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
 
-companies = 100
+companies = 1
 for i in range(companies):
     company_name = fake.company()
     contact_name = fake.name()
@@ -31,14 +31,14 @@ for i in range(companies):
     with engine.connect() as conn:
         conn.execute(stmt)
 
-invoices = 250
-for i in range(invoices):
-    clients = fake.random_int(min=1, max=100)
-    dates_sent = fake.date_between(start_date='-45d', end_date='-30d')
-    dates_paid = fake.date_between(start_date='-29d', end_date='-1d')
-    amounts = fake.pydecimal(left_digits=4, right_digits=2, positive=True, min_value=100.00)
-    services_rendered = fake.sentence(nb_words=12, variable_nb_words=True)
-    paid_bills = fake.boolean(chance_of_getting_true=65)
-    stmt = insert(InvoiceModel).values(client=clients, date_sent=dates_sent, date_paid=dates_paid, amount=amounts, services=services_rendered, paid=paid_bills)
-    with engine.connect() as conn:
-        conn.execute(stmt)
+#invoices = 250
+#for i in range(invoices):
+#    clients = fake.random_int(min=1, max=100)
+#    dates_sent = fake.date_between(start_date='-45d', end_date='-30d')
+#    dates_paid = fake.date_between(start_date='-29d', end_date='-1d')
+#    amounts = fake.pydecimal(left_digits=4, right_digits=2, positive=True, min_value=100.00)
+#    services_rendered = fake.sentence(nb_words=12, variable_nb_words=True)
+#    paid_bills = fake.boolean(chance_of_getting_true=65)
+#    stmt = insert(InvoiceModel).values(client=clients, date_sent=dates_sent, date_paid=dates_paid, amount=amounts, services=services_rendered, paid=paid_bills)
+#    with engine.connect() as conn:
+#        conn.execute(stmt)

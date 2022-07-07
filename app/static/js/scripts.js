@@ -4,13 +4,24 @@ $(document).ready(function () {
 
 $(document).ready(function () {
     $('#paid_boolean_0').click(function () {
-        $('#paid-date-picker').show();
+        $('#paid-date-picker').slideDown(250);
     });
     $('#paid_boolean_1').click(function () {
-        $('#paid-date-picker').hide();
+        $('#paid-date-picker').slideUp(250);
     });
 });
 
+$(document).ready(function () {
+    $('#sent_boolean_0').click(function () {
+        $('#sent-date-picker').slideDown(250);
+        $('#paid').delay(120).slideDown(250);
+    });
+    $('#sent_boolean_1').click(function () {
+        $('#paid').slideUp(250);
+        $('#sent-date-picker').delay(120).slideUp(250);
+
+    });
+});
 
 
 
@@ -27,7 +38,9 @@ $(document).ready(function () {
 
 
 $("#cancel").click(function () {
-    { window.history.back() };
+    $('#update_modal').fadeOut(300);
+    $('html').delay(300).fadeOut(300);
+    //{ window.history.back() };
 });
 
 $(".close").click(function () {
@@ -40,7 +53,7 @@ $(".close").click(function () {
 
 $(document).ready(function () {
     $("#delete-submit").click(function () {
-        $('form').submit()
+        $('form').submit();
         $('form').submit(function (event) {
             data = JSON.stringify({
                 'inv_id': $('#inv_id').val(),
@@ -74,17 +87,23 @@ $(document).ready(function () {
     $("#make-submit").click(function () {
         $('form').submit()
         $('form').submit(function (event) {
-            const paidButton = $("input[type='radio']:checked").val(); //false;
+            const paidButton = $("input[type='radio']:checked").val();
+            const sentButton = $("input[id='sent_boolean_0']:checked").val();
             let paidValue = false;
             let date_paid = null;
+            let sentValue = false;
+            let date_sent = null;
             if (paidButton === "true") { paidValue = true; };
-            if (paidValue == true) {date_paid = $('#date-paid').val(); };
+            if (paidValue == true) { date_paid = $('#date-paid').val(); };
+            if (sentButton === "true") { sentValue = true; };
+            if (sentValue == true) { date_sent = $('#date-sent').val(); };
             //if ( $('#paid_boolean_0').checked == True) {paidRB=true;};
             data = JSON.stringify({
                 'client_id': $('#client_id').val(),
                 'inv_id': $('#inv_id').val(),
                 'amount': $('#amount').val(),
                 'services': $('#services').val(),
+                'date_sent': date_sent,
                 'paid': paidValue,
                 'date_paid': date_paid
             });
@@ -106,6 +125,7 @@ $(document).ready(function () {
                 }
             })
             event.preventDefault();
+
         });
     });
 });
@@ -119,15 +139,21 @@ $(document).ready(function () {
         $('form').submit()
         $('form').submit(function (event) {
             const paidButton = $("input[type='radio']:checked").val(); //false;
+            const sentButton = $("input[id='sent_boolean_0']:checked").val(); //false;
             let paidValue = false;
             let date_paid = null;
+            let sentValue = false;
+            let date_sent = null;
             if (paidButton === "true") { paidValue = true; };
-            if (paidValue == true) {date_paid = $('#date-paid').val(); };
+            if (paidValue == true) { date_paid = $('#date-paid').val(); };
+            if (sentButton === "true") { sentValue = true; };
+            if (sentValue == true) { date_sent = $('#date-sent').val(); };
             data = JSON.stringify({
-                'client_id': $('#client_id').val(),
+                'company': $('#client_company').val(),
                 'inv_id': $('#inv_id').val(),
                 'amount': $('#amount').val(),
                 'services': $('#services').val(),
+                'date_sent': date_sent,
                 'paid': paidValue,
                 'date_paid': date_paid
             });
@@ -149,6 +175,7 @@ $(document).ready(function () {
                 }
             })
             event.preventDefault();
+            //window.history.back();
         });
     });
 });
