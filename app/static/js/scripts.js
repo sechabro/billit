@@ -153,3 +153,38 @@ $(document).ready(function () {
     });
 });
 
+
+$(document).ready(function () {
+    $("#add-client-submit").click(function () {
+        $('form').submit()
+        $('form').submit(function (event) {
+            data = JSON.stringify({
+                'company': $('#company').val(),
+                'contact': $('#contact').val(),
+                'email': $('#email').val(),
+                'address': $('#address').val(),
+                'city': $('#city').val(),
+                'state': $('#state').val(),
+                'zipcode': $('#zipcode').val()
+            });
+            console.log(data)
+            $.ajax('/add-client', {
+                type: 'POST',
+                cache: "no-cache",
+                processData: false,
+                dataType: "json",
+                contentType: "application/json",
+                data: data,
+                success: function (r) {
+                    console.log('Success');
+                    console.log(r);
+                },
+                error: function (r) {
+                    console.log('Error');
+                    console.log(r);
+                }
+            })
+            event.preventDefault();
+        });
+    });
+});

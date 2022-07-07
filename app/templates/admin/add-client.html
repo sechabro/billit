@@ -1,14 +1,27 @@
 {% extends "admin/templates/dashboard_template.html" %}
+{% block head %}
+{% endblock %}
 {% block col1 %}
-<div class="col-md-8 mx-auto">
-    <div class="card shadow-lg max-length text-center" style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
-      <div class="card-header">
-        <h2>Add Client</h2>
-      </div>
-<form class="px-4 py-4 table-content text-left">
+{% endblock %}
+{% block col2 %}
+{% endblock %}
+{% block nav %}
+{% endblock %}
+{% block cards %}
+{% endblock %}
+{% block modal %}
+<div id="update_modal" class="modal fade text-left" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content shadow-lg" style="border-radius: 1rem; border-width: 6px; border-color: #0004ff;">
+          <div class="modal-header">
+              <h3 class="modal-title">Add Client</h3>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+      <div class="container-fluid">
+        <form class="px-4 py-4 table-content text-left" method="POST">
           <div class="form-group">
-            <label for="company_name">Company Name</label> 
-            <input id="company_name" name="company_name" placeholder="Enter company name..." type="text" class="form-control" required="required">
+            <label for="company">Company Name</label> 
+            <input id="company" name="company" placeholder="Enter company name..." type="text" class="form-control" required="required">
           </div>
           <div class="form-group">
             <label for="contact">Contact</label> 
@@ -19,8 +32,8 @@
             <input id="email" name="email" placeholder="Enter client email address..." type="text" class="form-control" required="required">
           </div>
           <div class="form-group">
-            <label for="street_address">Street Address</label> 
-            <input id="street_address" name="street_address" placeholder="Enter company street address..." type="text" class="form-control" required="required">
+            <label for="address">Street Address</label> 
+            <input id="address" name="address" placeholder="Enter company street address..." type="text" class="form-control" required="required">
           </div>
           <div class="form-group">
             <label for="city">City</label> 
@@ -30,21 +43,25 @@
             <label for="state">State</label> 
             <div>
               <select id="state" name="state" class="custom-select" aria-describedby="stateHelpBlock" required="required">
-                <option value="rabbit">Rabbit</option>
-                <option value="duck">Duck</option>
+                {% for state in states %}
+                <option value={{state}}>{{state}}</option>
+                {% endfor %}
               </select> 
               <span id="stateHelpBlock" class="form-text text-muted">Select client state</span>
             </div>
           </div>
           <div class="form-group">
-            <label for="zip_code">Zip Code</label> 
-            <input id="zip_code" name="zip_code" placeholder="Enter five-digit zipcode" type="text" class="form-control" required="required">
+            <label for="zipcode">Zip Code</label> 
+            <input id="zipcode" name="zipcode" placeholder="Enter five-digit zipcode" type="text" class="form-control" required="required">
           </div> 
           <div class="form-group">
-            <button name="submit" type="submit" class="btn btn-primary">Submit</button>
+            <button id="cancel" type="button" class="btn btn-dark">Cancel</button>
+            <button id="add-client-submit" name="submit" type="submit" class="btn btn-primary">Update Invoice</button>
           </div>
         </form>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}
 </html>

@@ -192,10 +192,25 @@ def create_invoice():
 
 
 
+@app.route('/client-form-return', methods=['GET', 'POST'])
+def client_form():
+    states = ['AK', 'AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'GA',
+           'HI', 'IA', 'ID', 'IL', 'IN', 'KS', 'KY', 'LA', 'MA', 'MD', 'ME',
+           'MI', 'MN', 'MO', 'MS', 'MT', 'NC', 'ND', 'NE', 'NH', 'NJ', 'NM',
+           'NV', 'NY', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX',
+           'UT', 'VA', 'VT', 'WA', 'WI', 'WV', 'WY']
+    return render_template('admin/add-client.html', states=states)
+
 @app.route('/add-client', methods=['GET', 'POST'])
 def add_client():
-    return render_template('admin/add-client.html', paid_inv=paid_inv, unpaid_inv=unpaid_inv, total_inv=total_inv,
-                           total_clients=total_clients, billed_total=billed_total, collected_total=collected_total)
+    if request.method == 'POST':
+        req = request.get_json()
+        pp.pprint(req)
+        return jsonify({'status': 'looking good'})
+    else:
+        print('NOT A POST :(')
+        return 'REQUEST FAILED'
+
 
 
 @app.route('/plot.png')
