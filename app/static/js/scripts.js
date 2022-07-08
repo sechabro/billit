@@ -40,11 +40,17 @@ $(document).ready(function () {
 $("#cancel").click(function () {
     $('#update_modal').fadeOut(300);
     $('html').delay(300).fadeOut(300);
-    //{ window.history.back() };
+    $('html').fadeOut(function () {
+        $(location).attr('href', window.history.back());
+    });
 });
 
 $(".close").click(function () {
-    { window.history.back() };
+    $('#update_modal').fadeOut(300);
+    $('html').delay(300).fadeOut(300);
+    $('html').fadeOut(function () {
+        $(location).attr('href', window.history.back());
+    });
 });
 
 
@@ -85,7 +91,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
     $("#make-submit").click(function () {
-        $('form').submit()
+        $('form').submit();
         $('form').submit(function (event) {
             const paidButton = $("input[type='radio']:checked").val();
             const sentButton = $("input[id='sent_boolean_0']:checked").val();
@@ -125,8 +131,7 @@ $(document).ready(function () {
                 }
             })
             event.preventDefault();
-
-        });
+        })
     });
 });
 
@@ -175,7 +180,10 @@ $(document).ready(function () {
                 }
             })
             event.preventDefault();
-            //window.history.back();
+        }).delay(300).fadeOut(300);
+        $('html').delay(300).fadeOut(300);
+        $('html').fadeOut(function(){
+            $(window).attr('href', window.history.back());  //location
         });
     });
 });
@@ -213,5 +221,6 @@ $(document).ready(function () {
             })
             event.preventDefault();
         });
+    
     });
 });

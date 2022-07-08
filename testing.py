@@ -62,12 +62,12 @@ plt.show()'''
 
 
 
-sections = [paid_inv, unpaid_inv]
+'''sections = [paid_inv, unpaid_inv]
 labels = ['Paid Invoices', 'Unpaid Invoices']
 colors = ['green', 'red']
 plt.title('Paid vs. Unpaid')
 plt.pie(sections, labels=labels, wedgeprops={'edgecolor': 'black'}, colors=colors)
-plt.savefig('app/static/images/invoice_payment_data.png')
+plt.savefig('app/static/images/invoice_payment_data.png')'''
 
 #plt.savefig(img, format='png')
 #img.seek(0)
@@ -84,4 +84,12 @@ ax.bar(x = df['paid'], y = df['total'], color='green', height='55')
 ax.bar(x = df['unpaid'], y = df['total'], color='red', height='55')
 plt.show()'''
 
+
+# %%
+#X = np.arange(10)
+#Y = np.random.uniform(1, 10, 10)
+Z = np.random.uniform(0, 1, 2)
+fig, ax = plt.subplots()
+ax.pie(Z)
+fig.show()
 # %%

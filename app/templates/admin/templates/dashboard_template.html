@@ -15,16 +15,7 @@
 </head>
 <body>
   {% block head %}
-    <header class="jumbotron jumbotron-fluid">
-        <div class="container">
-            <div class="row row-content align-items-center">
-                <div class="col">
-                    <h1>BillIt</h1>
-                    <h2>Send that invoice already.</h2>               
-                </div>
-            </div>
-        </div>
-    </header>
+
     {% endblock %}
     {% block nav %}
     <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
@@ -80,7 +71,6 @@
         {% block col2 %}
             <div class="col-md-5 mx-auto">
                 <div class="card shadow-lg max-length-template px-4 py-4" style="border-radius: 1rem; border-width: 6px; border-color: #2d9d33;">
-                          <p>{{paid_inv}} paid invoices, {{ unpaid_inv }} unpaid invoices, {{ total_inv }} total invoices, and  total unique clients.</p>
                           <img src="/plot.png" alt="my plot">
                 </div>
             

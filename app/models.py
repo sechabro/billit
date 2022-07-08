@@ -38,8 +38,8 @@ class InvoiceModel(db.Model):
         return {
             'id': self.id,
             'client': self.client,
-            'date_sent': self.date_sent.isoformat(),
-            'date_paid': self.date_paid.isoformat(),
+            'date_sent': self.date_sent, #.isoformat(),
+            'date_paid': self.date_paid, #.isoformat(),
             'services': self.services,
             'amount': self.amount,
             'paid': self.paid
