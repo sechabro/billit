@@ -41,15 +41,15 @@ $("#cancel").click(function () {
     $('#update_modal').fadeOut(300);
     $('html').delay(300).fadeOut(300);
     $('html').fadeOut(function () {
-        $(location).attr('href', window.history.back());
+        window.location.href = document.referrer;
     });
 });
 
-$(".close").click(function () {
+$("#close").click(function () {
     $('#update_modal').fadeOut(300);
     $('html').delay(300).fadeOut(300);
     $('html').fadeOut(function () {
-        $(location).attr('href', window.history.back());
+        window.location.href = document.referrer;
     });
 });
 
@@ -73,8 +73,11 @@ $(document).ready(function () {
                 contentType: "application/json",
                 data: data,
                 success: function (r) {
-                    console.log('Success');
                     console.log(r);
+                    $('html').fadeOut(300);
+                    $('html').fadeOut(function (){
+                        window.location.href = document.referrer;
+                    })
                 },
                 error: function (r) {
                     console.log('Error');
@@ -121,9 +124,11 @@ $(document).ready(function () {
                 dataType: "json",
                 contentType: "application/json",
                 data: data,
-                success: function (r) {
-                    console.log('Success');
-                    console.log(r);
+                success: function () {
+                    $('html').fadeOut(300);
+                    $('html').fadeOut(function (){
+                        window.location.href = document.referrer;
+                    })
                 },
                 error: function (r) {
                     console.log('Error');
@@ -160,7 +165,7 @@ $(document).ready(function () {
                 'services': $('#services').val(),
                 'date_sent': date_sent,
                 'paid': paidValue,
-                'date_paid': date_paid
+                'date_paid': date_paid,
             });
             console.log(data)
             $.ajax('/update-inv', {
@@ -170,9 +175,11 @@ $(document).ready(function () {
                 dataType: "json",
                 contentType: "application/json",
                 data: data,
-                success: function (r) {
-                    console.log('Success');
-                    console.log(r);
+                success: function () {
+                    $('html').fadeOut(300);
+                    $('html').fadeOut(function (){
+                        window.location.href = document.referrer;
+                    })
                 },
                 error: function (r) {
                     console.log('Error');
@@ -180,14 +187,9 @@ $(document).ready(function () {
                 }
             })
             event.preventDefault();
-        }).delay(300).fadeOut(300);
-        $('html').delay(300).fadeOut(300);
-        $('html').fadeOut(function(){
-            $(window).attr('href', window.history.back());  //location
         });
     });
 });
-
 
 $(document).ready(function () {
     $("#add-client-submit").click(function () {
@@ -210,9 +212,11 @@ $(document).ready(function () {
                 dataType: "json",
                 contentType: "application/json",
                 data: data,
-                success: function (r) {
-                    console.log('Success');
-                    console.log(r);
+                success: function () {
+                    $('html').fadeOut(300);
+                    $('html').fadeOut(function (){
+                        window.location.href = document.referrer;
+                    })
                 },
                 error: function (r) {
                     console.log('Error');

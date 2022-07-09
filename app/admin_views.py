@@ -32,9 +32,8 @@ class Queries:
     collected_total_query = session.query(func.sum(InvoiceModel.amount)).filter(InvoiceModel.paid == True)
     billed_total = round(billed_total_query.scalar(), 2)
     collected_total = round(collected_total_query.scalar(), 2)
-
-
-    def list(self, arg):
+    
+    def list(self, arg): # This function creates a list out of all queries within methods
         list = []
         for i in arg:
             list.append(i.serialize())
@@ -44,7 +43,7 @@ class Queries:
     # TEMPLATE BASE ----------------
     @app.route('/dashboard')
     def dashboard_index():
-    
+        q.gen_queries()
         return render_template('admin/templates/dashboard_template.html', paid_inv=q.paid_inv, unpaid_inv=q.unpaid_inv, total_inv=q.total_inv,
                                total_clients=q.total_clients, billed_total=q.billed_total, collected_total=q.collected_total)
     # ------------------------------
@@ -53,7 +52,7 @@ class Queries:
     # DASHBOARD SORT VIEWS -----------------------------
     @app.route('/dashboard/all', methods=['GET', 'POST'])
     def invoice_index():
-        invoices = session.query(InvoiceModel).order_by(InvoiceModel.id)  #session querying to order by 
+        invoices = session.query(InvoiceModel).order_by(InvoiceModel.id)
         client_select = ClientModel.query.all()
         invoice_list = q.list(invoices)
         client_list = q.list(client_select)
@@ -88,6 +87,7 @@ class Queries:
     def inv_form():
         client_select = ClientModel.query.all()
         client_list = q.list(client_select)
+        
         return render_template('admin/make-inv.html', client_list=client_list)
     
     
@@ -112,35 +112,22 @@ class Queries:
         if request.method == 'POST':
             inv_to_update = q.list(inv)
             client_id = inv_to_update[0]['client']
-    
             client_select = ClientModel.query.all()
             client_list = q.list(client_select)
-    
-            unpaid = InvoiceModel.query.filter(InvoiceModel.paid == False)
-            unpaid_list = []
-            for u in unpaid:
-                unpaid_list.append(u.serialize())
-    
-            return render_template('admin/update.html', client_id=client_id, inv_to_update=inv_to_update, unpaid_list=unpaid_list,
-            client_list=client_list, total_clients=q.total_clients, paid_inv=q.paid_inv, unpaid_inv=q.unpaid_inv, total_inv=q.total_inv,
-                                   billed_total=q.billed_total, collected_total=q.collected_total)
-    
+            return render_template('admin/update.html', client_id=client_id, inv_to_update=inv_to_update, client_list=client_list)
+        else:
+            print('NOT A POST :(')
+            return 'REQUEST FAILED'
     
     @app.route('/update-inv', methods=['GET', 'POST'])
     def update_invoice():
         if request.method == 'POST':
             req = request.get_json()
-            pp.pprint(req)
             company = req['company']
-            #inv_to_update = InvoiceModel.query.filter(InvoiceModel.id == req['inv_id'])
             client_company = ClientModel.query.filter(ClientModel.company == company)
-            client_info = []
-            for c in client_company:
-                client_info.append(c.serialize())
-            print(client_info[0]['id'])
+            client_info = q.list(client_company)
             stmt = update(InvoiceModel).where(InvoiceModel.id == req['inv_id']).values(client=client_info[0]['id'], amount=req['amount'], services=req['services'],
                                               date_sent=req['date_sent'], date_paid=req['date_paid'], paid=req['paid'])
-            print(stmt)
             with engine.connect() as conn:
                 conn.execute(stmt)
             return jsonify({'Status': 'Invoice Updated'})
@@ -153,16 +140,10 @@ class Queries:
     def delete_inv_passthrough(inv_id: int):
         inv = InvoiceModel.query.filter(InvoiceModel.id == inv_id)
         if request.method == 'POST':
-            inv_to_delete = []
-            for i in inv:
-                inv_to_delete.append(i.serialize())
+            inv_to_delete = q.list(inv)
             client_id = inv_to_delete[0]['client']
-    
-            client_select = ClientModel.query.filter(
-                ClientModel.id == int(client_id))
-            client_info = []
-            for c in client_select:
-                client_info.append(c.serialize())
+            client_select = ClientModel.query.filter(ClientModel.id == int(client_id))
+            client_info = q.list(client_select)
             return render_template('admin/delete.html', client_info=client_info, inv_to_delete=inv_to_delete)
         else:
             print('No request sent.')
@@ -172,7 +153,6 @@ class Queries:
     def delete_invoice():
         if request.method == 'POST':
             req = request.get_json()
-            pp.pprint(req)
             int_req = int(req['inv_id'])
             try:
                 stmt = delete(InvoiceModel).where(InvoiceModel.id == int_req)
@@ -180,7 +160,6 @@ class Queries:
                     conn.execute(stmt)
                 flash('Invoice deleted successfully.')
                 return jsonify({'status': 'invoice deleted'})
-                # return redirect(url_for('unpaid_view'))
             except:
                 flash('Failed to delete invoice!')
                 return jsonify({'status': 'error: invoice not deleted.'})

@@ -5,9 +5,13 @@
     color: white;
 }
 
+#message_overlay {
+    display: block;
+    z-index: 0;
+}
+
 .row-content {
-    padding-top: 50px;
-    border-bottom: 1px ridge;
+    padding-top: 35px;
     min-height: 150px;
 }
 
