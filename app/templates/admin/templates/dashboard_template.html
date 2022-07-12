@@ -70,10 +70,58 @@
 <div class="container-fluid">
     <div class="row row-content">
         {% block col1 %}
+          <div class="col-md-7 mx-auto">
+    <div class="card shadow-lg max-length text-center border-secondary"
+      style="border-radius: 1rem; border-width: 4px;">
+      <div class="card-header">
+        <h2>All Invoices</h2>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-sm table-content table-striped table-bordered">
+          <thead>
+            <tr class="bg-primary text-light sticky-top">
+              <th>Invoice ID</th>
+              <th>Client</th>
+              <th>Date Sent</th>
+              <th>Amount</th>
+              <th colspan="2">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody class="table">
+            {% for invoice in invoice_list[0:-1] %}
+            <tr>
+              <th><input type="hidden" class="inv_id" value="{{invoice['id']}}">{{invoice['id']}}</th>
+              <td><input type="hidden" class="client_id" value="{{invoice['client']}}">{{invoice['client']}}</td>
+              <td><input type="hidden" class="date_sent" value="{{invoice['date_sent']}}">{{invoice['date_sent']}}</td>
+              <td><input type="hidden" class="inv_amount" value="{{invoice['amount']}}">${{invoice['amount']}}</td>
+              <td>
+                <form action="inv-prepop/{{invoice['id']}}" method="POST">
+                  <button type="submit" id="update_submit" class="btn btn-secondary">Edit <span
+                      class="fa-solid fa-file-pen"></span></button>
+                </form>
+              </td>
+              <td>
+                <form action="del-prepop/{{invoice['id']}}" method="POST">
+                  <button type="submit" id="delete_by_inv_num" class="btn btn-danger">Delete <span class="fa-solid fa-circle-exclamation"></span></button>
+                  </form>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+
+        </table>
+      </div>
+      <div class="card-footer text-muted">
+        <p>Edit, delete, or mark as "paid".</p>
+      </div>
+    </div>
+  </div>
         {% endblock %}
         {% block col2 %}
             <div class="col-md-5 mx-auto">
-                  <div class="card shadow-lg max-length-template text-center border-secondary"  style="border-radius: 1rem; border-width: 4px;">
+                  <div class="card shadow-lg text-center border-secondary"  style="border-radius: 1rem; border-width: 4px;">
                   <div class="card-header">
                     <h2>Data Visualization</h2>
                   </div>

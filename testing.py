@@ -1,8 +1,9 @@
 # %%
 from email.mime import base
+from unittest import result
 from flask_sqlalchemy import SQLAlchemy
 from app import app
-from flask import render_template, send_file, Flask
+from flask import render_template, send_file, Flask, jsonify
 from app.models import InvoiceModel, ClientModel
 from sqlalchemy import Boolean, create_engine, insert, select, func, distinct, true, values 
 from sqlalchemy.orm import sessionmaker, declarative_base
@@ -15,6 +16,8 @@ from io import StringIO, BytesIO
 from matplotlib.figure import Figure
 import seaborn as sns
 import io
+import psycopg2
+import json
 
 engine = create_engine('postgresql://postgres@localhost:5432/billit')
 Session = sessionmaker(bind=engine)
@@ -123,3 +126,47 @@ ax2.hist(xs2, ys1)
 output = io.BytesIO()
 FigureCanvas(fig).print_png(output)
 return Response(output.getvalue(), mimetype='image/png')'''
+# %%
+conn = psycopg2.connect (
+    """
+    dbname=billit user=postgres host=localhost port=5432
+    """
+)
+conn.set_session(autocommit=True)
+cur = conn.cursor()
+cur.execute(
+    """
+    SELECT state, COUNT(*) AS companies
+	FROM clients GROUP BY state
+	ORDER BY companies DESC LIMIT 10;
+    """
+)
+records = json.dumps(cur.fetchall())
+print(records)
+# %%
+conn = psycopg2.connect (
+    """
+    dbname=billit user=postgres host=localhost port=5432
+    """
+)
+conn.set_session(autocommit=True)
+cur = conn.cursor()
+cur.execute(
+    """
+	SELECT SUM(invoices.amount) AS amount_spent, clients.company AS client_name
+	FROM invoices
+	INNER JOIN clients
+	ON invoices.client = clients.id
+	GROUP BY invoices.client, clients.company
+	ORDER BY amount_spent DESC LIMIT 10;
+    """
+)
+records = (cur.fetchall())
+top_ten_spenders = []
+for row in records:
+    top_ten_spenders.append({"amount": (row[0]), "company": (row[1])})
+results = json.dumps(top_ten_spenders)
+print(results)
+
+
+# %%

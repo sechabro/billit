@@ -13,6 +13,7 @@ from matplotlib.figure import Figure
 import io
 import json
 import pprint
+import psycopg2
 
 pp = pprint.PrettyPrinter(indent=2, width=160, compact=False)
 
@@ -193,8 +194,12 @@ class Queries:
             return 'REQUEST FAILED'
     # -------------------------------------
 
+
+
+
+    # --------------- FIGURE GENERATION
     @app.route('/plot.png')
-    def plot_png():
+    def plot_png(self):
         q.gen_query()
         y = np.array([q.paid_inv, q.unpaid_inv])
         data_labels = ['Paid Invoices', 'Unpaid Invoices']
@@ -204,6 +209,32 @@ class Queries:
         plt.legend()
         return plt.savefig('app/static/img/invoice_payment_data.png')
 
+    @app.route('/top_ten_spenders.png')
+    def tts_png(self):
+        q.gen_query()
+        conn = psycopg2.connect (
+            """
+            dbname=billit user=postgres host=localhost port=5432
+            """
+        )
+        conn.set_session(autocommit=True)
+        cur = conn.cursor()
+        cur.execute(
+            """
+        	SELECT SUM(invoices.amount) AS amount_spent, clients.company AS client_name
+        	FROM invoices
+        	INNER JOIN clients
+        	ON invoices.client = clients.id
+        	GROUP BY invoices.client, clients.company
+        	ORDER BY amount_spent DESC LIMIT 10;
+            """
+        )
+        records = cur.fetchall()
+        top_ten_spenders = []
+        for row in records:
+            top_ten_spenders.append({"amount": (row[0]), "company": (row[1])})
+        return True
+    #----------------------------------------------------------
 
 
 q = Queries()
