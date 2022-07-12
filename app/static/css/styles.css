@@ -19,6 +19,14 @@
     border-bottom: none;
 }
 
+.image-grid-container {
+    display: grid;
+    /* For 2 columns */
+    grid-template-columns: auto auto;
+}
+img {
+    width: 100%;
+}
 .card {
     margin-bottom: 2rem;
     z-index: 1;
@@ -48,6 +56,10 @@
 .table-content {
     overflow: auto;
     margin-bottom: 10px;
+}
+
+.data-content {
+    overflow: auto;
 }
 
 .nav-bar-color {

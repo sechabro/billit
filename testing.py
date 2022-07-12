@@ -8,12 +8,13 @@ from sqlalchemy import Boolean, create_engine, insert, select, func, distinct, t
 from sqlalchemy.orm import sessionmaker, declarative_base
 import numpy as np, pandas as pd
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigCan
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.backends.backend_template import FigureManagerTemplate
 import base64
 from io import StringIO, BytesIO
 from matplotlib.figure import Figure
 import seaborn as sns
+import io
 
 engine = create_engine('postgresql://postgres@localhost:5432/billit')
 Session = sessionmaker(bind=engine)
@@ -86,10 +87,39 @@ plt.show()'''
 
 
 # %%
-#X = np.arange(10)
-#Y = np.random.uniform(1, 10, 10)
-Z = np.random.uniform(0, 1, 2)
-fig, ax = plt.subplots()
-ax.pie(Z)
-fig.show()
+
+y = np.array([paid_inv, unpaid_inv])
+data_labels = ['Paid Invoices', 'Unpaid Invoices']
+explode_data = [0, 0.1]
+sect_colors = ['gray', 'red']
+plt.pie(y, labels=data_labels, explode=explode_data, colors=sect_colors)
+plt.legend()
+plt.savefig('app/static/img/invoice_payment_data.png')
+plt.show()
+
 # %%
+
+list_paid = [paid_inv]
+list_unpaid = [unpaid_inv]
+list_total = ["Total Invoices"]
+
+bottom_paid=list_unpaid
+
+fig, ax = plt.subplots()
+p1=ax.bar(list_total, list_unpaid)
+p2=ax.bar(list_total, list_paid, bottom=bottom_paid)
+
+plt.show()
+# %%
+'''fig = Figure()
+gs = fig.add_gridspec(1, 2)
+ax1 = fig.add_subplot(gs[0, 0])
+ax2 = fig.add_subplot(gs[0, 1])
+xs = range(q.paid_inv)
+xs2 = range(q.unpaid_inv)
+ys1 = range(q.total_inv)
+ax1.hist(xs, ys1)
+ax2.hist(xs2, ys1)
+output = io.BytesIO()
+FigureCanvas(fig).print_png(output)
+return Response(output.getvalue(), mimetype='image/png')'''

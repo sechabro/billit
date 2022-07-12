@@ -23,89 +23,86 @@ session = Session()
 
 # DASHBOARD QUERIES
 
+
 class Queries:
-    paid_inv = session.query(InvoiceModel).filter(InvoiceModel.paid == True).count()
-    unpaid_inv = session.query(InvoiceModel).filter(InvoiceModel.paid == False).count()
-    total_clients = session.query(ClientModel).count()
-    total_inv = session.query(InvoiceModel).count()
-    billed_total_query = session.query(func.sum(InvoiceModel.amount))
-    collected_total_query = session.query(func.sum(InvoiceModel.amount)).filter(InvoiceModel.paid == True)
-    billed_total = round(billed_total_query.scalar(), 2)
-    collected_total = round(collected_total_query.scalar(), 2)
-    
-    def list(self, arg): # This function creates a list out of all queries within methods
+    def gen_query(self):
+        self.paid_inv = session.query(InvoiceModel).filter(InvoiceModel.paid == True).count()
+        self.unpaid_inv = session.query(InvoiceModel).filter(InvoiceModel.paid == False).count()
+        self.total_clients = session.query(ClientModel).count()
+        self.total_inv = session.query(InvoiceModel).count()
+        self.billed_total_query = session.query(func.sum(InvoiceModel.amount))
+        self.collected_total_query = session.query(func.sum(InvoiceModel.amount)).filter(InvoiceModel.paid == True)
+        self.billed_total = round(self.billed_total_query.scalar(), 2)
+        self.collected_total = round(self.collected_total_query.scalar(), 2)
+
+    def list(self, arg):  # This function creates a list out of all queries within methods
         list = []
         for i in arg:
             list.append(i.serialize())
         return list
 
-
     # TEMPLATE BASE ----------------
+
     @app.route('/dashboard')
     def dashboard_index():
-        q.gen_queries()
         return render_template('admin/templates/dashboard_template.html', paid_inv=q.paid_inv, unpaid_inv=q.unpaid_inv, total_inv=q.total_inv,
                                total_clients=q.total_clients, billed_total=q.billed_total, collected_total=q.collected_total)
     # ------------------------------
-    
 
     # DASHBOARD SORT VIEWS -----------------------------
+
     @app.route('/dashboard/all', methods=['GET', 'POST'])
     def invoice_index():
+        q.gen_query()
         invoices = session.query(InvoiceModel).order_by(InvoiceModel.id)
         client_select = ClientModel.query.all()
         invoice_list = q.list(invoices)
         client_list = q.list(client_select)
         return render_template('admin/all.html', invoice_list=invoice_list, client_list=client_list, paid_inv=q.paid_inv, unpaid_inv=q.unpaid_inv, total_inv=q.total_inv,
                                total_clients=q.total_clients, billed_total=q.billed_total, collected_total=q.collected_total)
-    
-    
+
     @app.route('/dashboard/unpaid', methods=['GET', 'POST'])
     def unpaid_view():
+        q.gen_query()
         unpaid = InvoiceModel.query.filter(InvoiceModel.paid == False)
         client_select = ClientModel.query.all()
         unpaid_list = q.list(unpaid)
         client_list = q.list(client_select)
         return render_template('admin/unpaid.html', client_list=client_list, unpaid_list=unpaid_list, paid_inv=q.paid_inv, unpaid_inv=q.unpaid_inv, total_inv=q.total_inv,
                                total_clients=q.total_clients, billed_total=q.billed_total, collected_total=q.collected_total)
-    
-    
+
     @app.route('/dashboard/by-client', methods=['GET', 'POST'])
     def client_view():
+        q.gen_query()
         clients = InvoiceModel.query.order_by(InvoiceModel.client)
         client_list = q.list(clients)
         return render_template('admin/by-client.html', client_list=client_list, paid_inv=q.paid_inv, unpaid_inv=q.unpaid_inv, total_inv=q.total_inv,
                                total_clients=q.total_clients, billed_total=q.billed_total, collected_total=q.collected_total)
     # ---------------------------------------------
-    
-    
-    
-    
-    
+
     # INVOICE ADDING, EDITING, AND DELETING ---------
+
     @app.route('/inv-form-return', methods=['GET', 'POST'])
     def inv_form():
         client_select = ClientModel.query.all()
         client_list = q.list(client_select)
-        
+
         return render_template('admin/make-inv.html', client_list=client_list)
-    
-    
+
     @app.route('/create-inv', methods=['GET', 'POST'])
     def create_invoice():
         if request.method == 'POST':
             req = request.get_json()
             print('Creating invoice file for:', req)
             stmt = insert(InvoiceModel).values(client=req['client_id'], services=req['services'], amount=req['amount'],
-                                              paid=req['paid'], date_paid=req['date_paid'], date_sent=req['date_sent'])
+                                               paid=req['paid'], date_paid=req['date_paid'], date_sent=req['date_sent'])
             with engine.connect() as conn:
                 conn.execute(stmt)
             return jsonify({'Status': 'Client added!'})
         else:
             print('NOT A POST :(')
             return 'REQUEST FAILED'
-    
-    
+
     @app.route('/dashboard/inv-prepop/<int:inv_id>', methods=['GET', 'POST'])
     def inv_passthrough(inv_id: int):
         inv = InvoiceModel.query.filter(InvoiceModel.id == inv_id)
@@ -118,37 +115,37 @@ class Queries:
         else:
             print('NOT A POST :(')
             return 'REQUEST FAILED'
-    
+
     @app.route('/update-inv', methods=['GET', 'POST'])
     def update_invoice():
         if request.method == 'POST':
             req = request.get_json()
             company = req['company']
-            client_company = ClientModel.query.filter(ClientModel.company == company)
+            client_company = ClientModel.query.filter(
+                ClientModel.company == company)
             client_info = q.list(client_company)
             stmt = update(InvoiceModel).where(InvoiceModel.id == req['inv_id']).values(client=client_info[0]['id'], amount=req['amount'], services=req['services'],
-                                              date_sent=req['date_sent'], date_paid=req['date_paid'], paid=req['paid'])
+                                                                                       date_sent=req['date_sent'], date_paid=req['date_paid'], paid=req['paid'])
             with engine.connect() as conn:
                 conn.execute(stmt)
             return jsonify({'Status': 'Invoice Updated'})
         else:
             print('NOT A POST :(')
             return 'REQUEST FAILED'
-    
-    
+
     @app.route('/dashboard/del-prepop/<int:inv_id>', methods=['GET', 'POST'])
     def delete_inv_passthrough(inv_id: int):
         inv = InvoiceModel.query.filter(InvoiceModel.id == inv_id)
         if request.method == 'POST':
             inv_to_delete = q.list(inv)
             client_id = inv_to_delete[0]['client']
-            client_select = ClientModel.query.filter(ClientModel.id == int(client_id))
+            client_select = ClientModel.query.filter(
+                ClientModel.id == int(client_id))
             client_info = q.list(client_select)
             return render_template('admin/delete.html', client_info=client_info, inv_to_delete=inv_to_delete)
         else:
             print('No request sent.')
-    
-    
+
     @app.route('/delete-inv', methods=['GET', 'POST'])
     def delete_invoice():
         if request.method == 'POST':
@@ -164,17 +161,14 @@ class Queries:
                 flash('Failed to delete invoice!')
                 return jsonify({'status': 'error: invoice not deleted.'})
                 # return redirect(url_for('unpaid_view'))
-    
+
         else:
             print('NOT A POST :(')
             return 'REQUEST FAILED'
     # ---------------------------------------------
-    
-    
-    
-    
-    
+
     # CLIENT ADDING, EDITING, AND DELETING ---------
+
     @app.route('/client-form-return', methods=['GET', 'POST'])
     def client_form():
         states = ['AK', 'AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'GA',
@@ -183,8 +177,7 @@ class Queries:
                   'NV', 'NY', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX',
                   'UT', 'VA', 'VT', 'WA', 'WI', 'WV', 'WY']
         return render_template('admin/add-client.html', states=states)
-    
-    
+
     @app.route('/add-client', methods=['GET', 'POST'])
     def add_client():
         if request.method == 'POST':
@@ -199,22 +192,18 @@ class Queries:
             print('NOT A POST :(')
             return 'REQUEST FAILED'
     # -------------------------------------
-    
-    
+
     @app.route('/plot.png')
     def plot_png():
-        fig = Figure()
-        gs = fig.add_gridspec(1, 2)
-        ax1 = fig.add_subplot(gs[0, 0])
-        ax2 = fig.add_subplot(gs[0, 1])
-        xs = range(q.paid_inv)
-        xs2 = range(q.unpaid_inv)
-        ys1 = range(q.total_inv)
-        ax1.hist(xs, ys1)
-        ax2.hist(xs2, ys1)
-        output = io.BytesIO()
-        FigureCanvas(fig).print_png(output)
-        return Response(output.getvalue(), mimetype='image/png')
-    
+        q.gen_query()
+        y = np.array([q.paid_inv, q.unpaid_inv])
+        data_labels = ['Paid Invoices', 'Unpaid Invoices']
+        explode_data = [0, 0.1]
+        sect_colors = ['gray', 'red']
+        plt.pie(y, labels=data_labels, explode=explode_data, colors=sect_colors)
+        plt.legend()
+        return plt.savefig('app/static/img/invoice_payment_data.png')
+
+
 
 q = Queries()
