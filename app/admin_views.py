@@ -7,7 +7,6 @@ from sqlalchemy import Boolean, create_engine, insert, select, func, distinct, t
 from sqlalchemy.orm import sessionmaker, declarative_base
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.pyplot import savefig
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import io
@@ -197,19 +196,20 @@ class Queries:
 
 
 
-    # --------------- FIGURE GENERATION
-    @app.route('/plot.png')
-    def plot_png(self):
-        q.gen_query()
+    # --------------- FIGURE GENERATION *NOT YET FUNCTIONAL* --------------------
+    #@app.route('/plot.png')
+    def pie_png(self):
         y = np.array([q.paid_inv, q.unpaid_inv])
         data_labels = ['Paid Invoices', 'Unpaid Invoices']
         explode_data = [0, 0.1]
         sect_colors = ['gray', 'red']
         plt.pie(y, labels=data_labels, explode=explode_data, colors=sect_colors)
         plt.legend()
-        return plt.savefig('app/static/img/invoice_payment_data.png')
+        plt.switch_backend('png')
+        plt.savefig('app/static/img/invoice_payment_data.png')
 
-    @app.route('/top_ten_spenders.png')
+
+    #@app.route('/top_ten_spenders.png')
     def tts_png(self):
         q.gen_query()
         conn = psycopg2.connect (

@@ -121,57 +121,61 @@
         {% endblock %}
         {% block col2 %}
             <div class="col-md-5 mx-auto">
-                  <div class="card shadow-lg text-center border-secondary"  style="border-radius: 1rem; border-width: 4px;">
+              <div class="card shadow-lg text-center border-secondary"  style="border-radius: 1rem; border-width: 4px;">
                   <div class="card-header">
                     <h2>Data Visualization</h2>
                   </div>
                   <div class="image-grid-container px-2 py-2 data-content">
-                     <img src="../../../static/img/invoice_payment_data.png?${new Date().toISOString()}" alt="Paid vs Unpaid Pie Chart">
-                     <img src="../../../static/img/invoice_payment_data.png?${new Date().toISOString()}" alt="Paid vs Unpaid Pie Chart">
-                     <img src="../../../static/img/invoice_payment_data.png?${new Date().toISOString()}" alt="Paid vs Unpaid Pie Chart">
-                     <img src="../../../static/img/invoice_payment_data.png?${new Date().toISOString()}" alt="Paid vs Unpaid Pie Chart">
+                    <div class="container">
+                        <img id="invoice_data" src="../../../static/img/invoice_payment_data.png?${new Date().toISOString()}" alt="Paid vs Unpaid Pie Chart">
+                        <!---<div class="overlay">
+                         <div class="text">Invoices: Paid vs Unpaid</div>
+                        </div>-->
+                    </div>
+                    <div class="container">
+                        <!--<p class="over-z" id="invoice_hover" style="display: none;">Invoices: Paid vs. Unpaid</p>-->
+                        <img id="top_ten_clients" src="../../../static/img/top_ten_clients.png?${new Date().toISOString()}" alt="Top 10 Clients by Billing">
+                    </div>
                   </div>
                   <div class="card-footer text-muted">
                     <p>Click to enlarge invoice data.</p>
                   </div>
-                </div>
+              </div>
 
-            
-                <div class="card shadow-lg px-4 py-4 border-secondary" style="border-radius: 1rem; border-width: 4px;">
-                  <div class="container bottom-align">
-                      <div class="row">
-                        <div class="col-md-8 mx-auto">
-                          <h4>${{ billed_total }}</h4>  
-                        </div>
-                        <div class="col-md-4 mx-auto">
-                          <i class="fa-solid fa-xl fa-file-invoice-dollar"></i>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-md-8 mx-auto">
-                          <h4>${{ collected_total }}</h4>
-                        </div>
-                        <div class="col-md-4 mx-auto"> 
-                          <i class="fa-solid fa-xl fa-hand-holding-dollar fa-color-change"></i>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-md-8 mx-auto">
-                          <h4>{{ total_clients }}</h4>
-                        </div>
-                        <div class="col-md-4 mx-auto"> 
-                          <i class="fa-solid fa-xl fa-address-book"></i>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-md-8 mx-auto">
-                          <h4>{{ unpaid_inv }}</h4>
-                        </div>
-                        <div class="col-md-4 mx-auto"> 
-                          <i class="fa-solid fa-xl fa-hourglass fa-color-change2"></i>
-                        </div>
-                      </div>
+              <div class="card shadow-lg text-center border-secondary"  style="border-radius: 1rem; border-width: 4px;">
+                <div class="card-header">
+                  <h2>Statistics & Counts</h2>
+                </div>
+                <div class="container">
+                  <div class="d-flex flex-row align-content-between flex-wrap">
+                    <div class="col-md-3 mx-auto align-self-end">
+                      <h3>Billed</h3>
+                      <h4>${{ billed_total }}</h4>  
+                    </div>
+                    <div class="col-md-3 mx-auto align-self-end">
+                      <h3>Collected</h3>
+                      <h4>${{ collected_total }}</h4>
+                    </div>
+                    <div class="col-md-3 mx-auto align-self-end">
+                      <h3>Unpaid</h3>
+                      <h4>{{ unpaid_inv }}</h4>
+                    </div>
+                    <div class="col-md-3 mx-auto align-self-end">
+                      <h3>Paid</h3>
+                      <h4>{{ paid_inv }}</h4>
+                    </div>
+                    <div class="col-md-3 mx-auto align-self-end">
+                      <h3>All Invoices</h3>
+                      <h4>{{ total_inv }}</h4>
+                    </div>
+                    <div class="col-md-3 mx-auto align-self-end">
+                      <h3>All Clients</h3>
+                      <h4>{{ total_clients }}</h4>
+                    </div>
                   </div>
+                </div>
+                <div class="card-footer text-muted">
+                  <p>Statistics change as you edit, add, and delete invoices & clients.</p>
                 </div>
             </div>
         {% endblock %}
@@ -180,6 +184,30 @@
 {% endblock %}
 
 {% block modal %}
+<div id="invoice_data_modal" class="modal fade text-center" role="dialog">
+  <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content shadow-lg border-secondary" style="border-radius: 1rem; border-width: 5px;">
+          <div class="modal-header">
+              <h3 class="modal-title">Invoices: Paid vs Unpaid</h3>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <img src="../../../static/img/invoice_payment_data.png?${new Date().toISOString()}" alt="Paid vs Unpaid Pie Chart">
+      </div>
+  </div>
+</div>
+<div id="top_ten_clients_modal" class="modal fade text-center" role="dialog">
+  <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content shadow-lg border-secondary" style="border-radius: 1rem; border-width: 5px;">
+          <div class="modal-header">
+              <h3 class="modal-title">Top 10 Clients by Billing</h3>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+          <img src="../../../static/img/top_ten_clients.png?${new Date().toISOString()}" alt="Top 10 Clients by Billing">
+        </div>
+      </div>
+  </div>
+</div>
 {% endblock %}
 
     <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
@@ -189,3 +217,42 @@
 
 
 </body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                      <!--
+      total billed icon              <div class="col-md-4 mx-auto">
+                      <i class="fa-solid fa-xl fa-file-invoice-dollar"></i>
+                    </div>
+                  
+      total collected icon 
+                                        <div class="col-md-4 mx-auto"> 
+                      <i class="fa-solid fa-xl fa-hand-holding-dollar fa-color-change"></i>
+                    </div>
+                  
+      total unpaid invoice icon
+                          <div class="col-md-4 mx-auto"> 
+                      <i class="fa-solid fa-xl fa-hourglass fa-color-change2"></i>
+                    </div>
+                    
+      total clients icon 
+                          <div class="col-md-4 mx-auto"> 
+                      <i class="fa-solid fa-xl fa-address-book"></i>
+                    </div>              
+                  
+                  -->

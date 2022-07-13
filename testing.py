@@ -90,16 +90,18 @@ plt.show()'''
 
 
 # %%
+def pie_plot():
+    y = np.array([paid_inv, unpaid_inv])
+    data_labels = ['Paid Invoices', 'Unpaid Invoices']
+    explode_data = [0, 0.1]
+    sect_colors = ['gray', 'red']
+    plt.pie(y, labels=data_labels, explode=explode_data, colors=sect_colors, radius=1.25)
+    plt.legend()
+    fig = plt.gcf()
+    fig.set_size_inches(16, 9)
+    return plt.savefig('app/static/img/invoice_payment_data.png')
 
-y = np.array([paid_inv, unpaid_inv])
-data_labels = ['Paid Invoices', 'Unpaid Invoices']
-explode_data = [0, 0.1]
-sect_colors = ['gray', 'red']
-plt.pie(y, labels=data_labels, explode=explode_data, colors=sect_colors)
-plt.legend()
-plt.savefig('app/static/img/invoice_payment_data.png')
-plt.show()
-
+pie_plot()
 # %%
 
 list_paid = [paid_inv]
@@ -162,11 +164,34 @@ cur.execute(
     """
 )
 records = (cur.fetchall())
-top_ten_spenders = []
+top_ten_spenders = {}
 for row in records:
-    top_ten_spenders.append({"amount": (row[0]), "company": (row[1])})
-results = json.dumps(top_ten_spenders)
-print(results)
+    top_ten_spenders.update({(row[1]): (row[0])})
+print(top_ten_spenders.keys())
 
+company = list(top_ten_spenders.keys())
+amount_spent = list(top_ten_spenders.values())
+fig, ax = plt.subplots(figsize =(20, 12))
+ax.barh(company, amount_spent, color='gray')
+ax.xaxis.set_ticks_position('none')
+ax.yaxis.set_ticks_position('none')
+ax.invert_yaxis()
+for i in ax.patches:
+    plt.text(i.get_width()+0.2, i.get_y()+0.5,
+             str(round((i.get_width()), 2)),
+             fontsize = 10, fontweight ='bold',
+             color ='grey')
+ax.set_title('Top 10 Clients based on Billings To-Date',
+             loc ='left', )
+#fig = plt.figure(figsize = (16, 9))
+#plt.bar(company, amount_spent, color='gray', width=0.4)
+#plt.xlabel('Company')
+#plt.ylabel('Dollars Spent')
+#plt.title('Top 10 Clients')
+fig = plt.gcf()
+fig.set_size_inches(16, 9)
+plt.savefig('app/static/img/top_ten_clients.png')
+
+# %%
 
 # %%

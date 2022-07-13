@@ -23,8 +23,32 @@ $(document).ready(function () {
     });
 });
 
+/*$(document).ready(function () {
+    $('#invoice_data').mouseover(function () {
+        $('#overlay').show();
+    });
+    $('#invoice_data').mouseout(function (){
+        $('#overlay').hide();
+    });
+});*/
 
+$(document).ready(function () {
+    $('#invoice_data').click(function () {
+        $('#invoice_data_modal').modal('show');
+    });
+    $('#invoice_data').mouseout(function (){
+        $('#overlay').hide();
+    });
+});
 
+$(document).ready(function () {
+    $('#top_ten_clients').click(function () {
+        $('#top_ten_clients_modal').modal('show');
+    });
+    $('#invoice_data').mouseout(function (){
+        $('#overlay').hide();
+    });
+});
 
 $(document).ready(function () {
     $("#update_modal").modal('show');
