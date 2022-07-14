@@ -204,7 +204,7 @@ $(document).ready(function () {
     $("#update-submit").click(function () {
         $('form').submit()
         $('form').submit(function (event) {
-            const paidButton = $("input[type='radio']:checked").val(); //false;
+            const paidButton = $("input[id='id=paid_boolean_0']:checked").val(); //false;
             const sentButton = $("input[id='sent_boolean_0']:checked").val(); //false;
             let paidValue = false;
             let date_paid = null;
