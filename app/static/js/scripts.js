@@ -2,6 +2,49 @@ $(document).ready(function () {
     $("#make_modal").modal('show');
 });
 
+// If date_sent invoice value is not null, "yes" is checked, date picker slides open after 600ms delay, and 'Paid?' radio choice slides open 100ms thereafter. 
+$(document).ready(function() {
+    const dateSent = $('#date-sent').val();
+    if (dateSent != null) {
+        $("input[name=sent_boolean_0]").prop("checked", true);
+        $("input[name=sent_boolean_1]").attr("disabled", true);  
+        $("input[name=sent_boolean_0").prop("checked", function() {
+            $('#sent-date-picker').delay(600).slideDown(250);
+            $('#paid').delay(700).slideDown(250);
+        });        
+    };
+});
+
+// slide-opening and closing sent-date picker
+$(document).ready(function () {
+    $('#sent_boolean_0').click(function () {
+        $('#sent-date-picker').slideDown(250);
+        $('#paid').delay(120).slideDown(250);
+    })
+    $('#sent_boolean_1').click(function () {
+        $('#paid').slideUp(250);
+        $('#sent-date-picker').delay(120).slideUp(250);
+
+    });
+});
+
+// If date_paid invoice value is empty, "no" is checked. Else, "yes" is checked and paid-date picker slides open after 600ms delay.
+$(document).ready(function() {
+    const datePaid = $('#date-paid').val();
+    if (datePaid == "") {
+        $("input[id=paid_boolean_1]").prop("checked", true);
+
+    } else {
+        $("input[id=paid_boolean_0]").prop("checked", true);
+        $("input[id=paid_boolean_1]").prop("disabled", true);
+        $("input[id=paid_boolean_0]").prop("checked", function() {
+            $('#paid-date-picker').delay(600).slideDown(250);
+        });
+    };
+});
+
+
+// slide-opening and closing paid-date picker
 $(document).ready(function () {
     $('#paid_boolean_0').click(function () {
         $('#paid-date-picker').slideDown(250);
@@ -11,17 +54,6 @@ $(document).ready(function () {
     });
 });
 
-$(document).ready(function () {
-    $('#sent_boolean_0').click(function () {
-        $('#sent-date-picker').slideDown(250);
-        $('#paid').delay(120).slideDown(250);
-    });
-    $('#sent_boolean_1').click(function () {
-        $('#paid').slideUp(250);
-        $('#sent-date-picker').delay(120).slideUp(250);
-
-    });
-});
 
 /*$(document).ready(function () {
     $('#invoice_data').mouseover(function () {
