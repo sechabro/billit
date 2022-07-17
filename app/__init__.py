@@ -1,12 +1,14 @@
 import os
 from flask import Flask
 from flask_migrate import Migrate
+from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 
-app = Flask(__name__, instance_relative_config=True, template_folder='templates')
+app = Flask(__name__, instance_relative_config=True,
+            template_folder='templates')
 
 
 def create_app(test_config=None):
-    
+
     app.config.from_mapping(
         SECRET_KEY='dev',
         SQLALCHEMY_DATABASE_URI='postgresql://postgres@localhost:5432/billit',
@@ -30,11 +32,12 @@ def create_app(test_config=None):
     from .models import db
     db.init_app(app)
     migrate = Migrate(app, db)
-    
+
     from app import views, admin_views
 
-    from .api import clients, invoices
+    from .api import clients, invoices, users
     app.register_blueprint(clients.bp)
     app.register_blueprint(invoices.bp)
+    app.register_blueprint(users.bp)
 
     return app
