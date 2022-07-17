@@ -3,6 +3,7 @@ from sqlalchemy import ForeignKey, create_engine, Column, Integer, String, Boole
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, date
 import time
+from flask_login import UserMixin
 
 db = SQLAlchemy()
 engine = create_engine('postgresql://postgres@localhost:5432/billit')
@@ -38,8 +39,8 @@ class InvoiceModel(db.Model):
         return {
             'id': self.id,
             'client': self.client,
-            'date_sent': self.date_sent, #.isoformat(),
-            'date_paid': self.date_paid, #.isoformat(),
+            'date_sent': self.date_sent,  # .isoformat(),
+            'date_paid': self.date_paid,  # .isoformat(),
             'services': self.services,
             'amount': self.amount,
             'paid': self.paid
@@ -77,4 +78,26 @@ class ClientModel(db.Model):
             'city': self.city,
             'state': self.state,
             'zipcode': self.zipcode
+        }
+
+
+class UserModel(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(128), unique=True, nullable=False)
+    email = db.Column(db.String(128), nullable=False)
+    password = db.Column(db.String(128), nullable=False)
+
+    def __init__(self, id, name, email, password):
+        self.id = id
+        self.name = name
+        self.email = email
+        self.password = password
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'email': self.email,
+            'password': self.password
         }
