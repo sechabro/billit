@@ -12,33 +12,36 @@
     {% extends "public/templates/public_template.html" %}
 
     {% block login %}
-    <form>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-8">
-                    <form>
-                        <div class="form-group row">
-                          <label for="text1" class="col-4 col-form-label">username or email</label> 
-                          <div class="col-8">
+    <div class="container">
+        <div class="d-flex justify-content-center row-content">
+            <h2>LOGIN</h2>
+        </div>
+        <div class="d-flex justify-content-center">
+            <div class="col-sm-8">
+                <form>
+                    <div class="form-group row">
+                        <label for="text1" class="col-4 col-form-label">username or email</label>
+                        <div class="col-8">
                             <input id="text1" name="text1" type="text" class="form-control">
-                          </div>
                         </div>
-                        <div class="form-group row">
-                          <label for="text" class="col-4 col-form-label">password</label> 
-                          <div class="col-8">
+                    </div>
+                    <div class="form-group row">
+                        <label for="text" class="col-4 col-form-label">password</label>
+                        <div class="col-8">
                             <input id="text" name="text" type="text" class="form-control">
-                          </div>
-                        </div> 
-                        <div class="form-group row">
-                          <div class="offset-4 col-8">
-                            <button name="submit" type="submit" class="btn btn-primary">Login</button>
-                          </div>
                         </div>
-                      </form>
-                </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="offset-4 col-8">
+                            <button name="submit" type="submit" class="btn btn-primary">Login</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
-        {% endblock %}
+
+    </div>
+    {% endblock %}
 </body>
 
 </html>
