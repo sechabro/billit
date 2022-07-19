@@ -1,8 +1,8 @@
 from multiprocessing.connection import Client
 from flask_sqlalchemy import SQLAlchemy
 from app import app
-from flask import Blueprint, flash, jsonify, make_response, redirect, render_template, send_file, Flask, send_from_directory, Response, url_for, request
-from app.models import InvoiceModel, ClientModel, db
+from flask import Blueprint, flash, jsonify, make_response, redirect, render_template, send_file, Flask, send_from_directory, Response, url_for, request, session as sesh
+from app.models import InvoiceModel, ClientModel, UserModel, db
 from sqlalchemy import Boolean, create_engine, insert, select, func, distinct, true, values, delete, update
 from sqlalchemy.orm import sessionmaker, declarative_base
 import matplotlib.pyplot as plt
@@ -48,7 +48,23 @@ class Queries:
         return render_template('admin/templates/dashboard_template.html', paid_inv=q.paid_inv, unpaid_inv=q.unpaid_inv, total_inv=q.total_inv,
                                total_clients=q.total_clients, billed_total=q.billed_total, collected_total=q.collected_total)
     # ------------------------------
-
+    # LOGIN CHECK ------------------------------------
+    @app.route('/login', methods=['GET', 'POST'])
+    def login():
+        req = request.get_json()
+        if request.method == 'POST':
+            user = req['username']
+            user_query = session.query(UserModel).order_by(UserModel.name)
+            if user in user_query:
+                pwd = req['password']
+                pwd_query = UserModel.query.filter(UserModel.name == user)
+                if pwd == pwd_query.password:
+                    return redirect(url_for('invoice_index'))
+            else:
+                pass
+        else:
+            pass
+    #---------------------------------------------------
     # DASHBOARD SORT VIEWS -----------------------------
 
     @app.route('/dashboard/all', methods=['GET', 'POST'])
