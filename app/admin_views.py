@@ -41,6 +41,30 @@ class Queries:
             list.append(i.serialize())
         return list
 
+    # LOGIN CHECK ------------------------------------
+    @app.route('/login', methods=['GET', 'POST'])
+    def login():
+        if request.method == 'POST':
+            req = request.get_json()
+            user = req['username']
+            user_query = UserModel.query.filter(UserModel.name == user)
+            user_record = q.list(user_query)
+            if user == user_record['name']:
+                pwd = req['password']
+                if pwd == user_record['password']:
+                    sesh['user'] = user
+                    return redirect(url_for('invoice_index'))
+                else:
+                    flash('Invalid username-password combination.')
+                    return render_template('public/index.html')
+            else:
+                flash('Invalid username.')
+                return render_template('public/index.html')
+        else:
+            flash('Please login.')
+            return render_template('public/index.html')
+    #---------------------------------------------------
+
     # TEMPLATE BASE ----------------
 
     @app.route('/dashboard')
@@ -48,34 +72,22 @@ class Queries:
         return render_template('admin/templates/dashboard_template.html', paid_inv=q.paid_inv, unpaid_inv=q.unpaid_inv, total_inv=q.total_inv,
                                total_clients=q.total_clients, billed_total=q.billed_total, collected_total=q.collected_total)
     # ------------------------------
-    # LOGIN CHECK ------------------------------------
-    @app.route('/login', methods=['GET', 'POST'])
-    def login():
-        req = request.get_json()
-        if request.method == 'POST':
-            user = req['username']
-            user_query = session.query(UserModel).order_by(UserModel.name)
-            if user in user_query:
-                pwd = req['password']
-                pwd_query = UserModel.query.filter(UserModel.name == user)
-                if pwd == pwd_query.password:
-                    return redirect(url_for('invoice_index'))
-            else:
-                pass
-        else:
-            pass
-    #---------------------------------------------------
     # DASHBOARD SORT VIEWS -----------------------------
 
     @app.route('/dashboard/all', methods=['GET', 'POST'])
     def invoice_index():
-        q.gen_query()
-        invoices = session.query(InvoiceModel).order_by(InvoiceModel.id)
-        client_select = ClientModel.query.all()
-        invoice_list = q.list(invoices)
-        client_list = q.list(client_select)
-        return render_template('admin/all.html', invoice_list=invoice_list, client_list=client_list, paid_inv=q.paid_inv, unpaid_inv=q.unpaid_inv, total_inv=q.total_inv,
-                               total_clients=q.total_clients, billed_total=q.billed_total, collected_total=q.collected_total)
+        if 'user' in sesh:
+            user = sesh['user']
+            q.gen_query()
+            invoices = session.query(InvoiceModel).order_by(InvoiceModel.id)
+            client_select = ClientModel.query.all()
+            invoice_list = q.list(invoices)
+            client_list = q.list(client_select)
+            return render_template('admin/all.html', user=user, invoice_list=invoice_list, client_list=client_list, paid_inv=q.paid_inv, unpaid_inv=q.unpaid_inv, total_inv=q.total_inv,
+                                   total_clients=q.total_clients, billed_total=q.billed_total, collected_total=q.collected_total)
+        else:
+            flash('Please login.')
+            return render_template('public/index.html')
 
     @app.route('/dashboard/unpaid', methods=['GET', 'POST'])
     def unpaid_view():
