@@ -1,5 +1,5 @@
 .jumbotron {
-    margin-bottom: 0px;
+    margin-bottom: 50px;
     padding: 15px;
     background-image: linear-gradient(to right, #0004ff, #595cff, #272866);
     color: white;
@@ -48,7 +48,7 @@ img {
 }
 
 .max-length {
-    height: 800px;
+    height: 736px;
 }
 
 .max-length-template {

@@ -33,7 +33,7 @@ def create_app(test_config=None):
     db.init_app(app)
     migrate = Migrate(app, db)
 
-    from app import views, admin_views
+    from app import views
 
     from .api import clients, invoices, users
     app.register_blueprint(clients.bp)
